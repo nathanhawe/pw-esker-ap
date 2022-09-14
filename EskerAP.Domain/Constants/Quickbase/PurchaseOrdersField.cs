@@ -18,6 +18,11 @@
 		Date = 7,
 
 		/// <summary>
+		/// [Requested By] - User
+		/// </summary>
+		RequestedBy = 8,
+
+		/// <summary>
 		/// [Total] - Currency
 		/// </summary>
 		Total = 51,
@@ -38,6 +43,18 @@
 		Tax = 114,
 
 		/// <summary>
+		/// [PO No.] - String that concatenates the PO Number with a location prefix
+		/// </summary>
+		PONo = 507,
+
+		/// <summary>
+		/// [Order Placed With Vendor By] - User 
+		/// </summary>
+		OrderPlacedWithVendorBy = 561,
+
+
+
+		/// <summary>
 		/// [PO Paid] - Checkbox indicates whether the purchase order has been completely paid.
 		/// </summary>
 		POPaid = 679,
@@ -46,5 +63,10 @@
 		/// [VENDORID] - String
 		/// </summary>
 		VendorId = 922,
+
+		/// <summary>
+		/// [Total Amount Received] - Currency that indicates the total dollar amount of items received.
+		/// </summary>
+		TotalAmountReceived = 935,
 	}
 }

@@ -4,6 +4,6 @@ namespace EskerAP.Data.Quickbase
 {
 	public interface IPurchaseOrdersRepo
 	{
-		public IEnumerable<EskerAP.Domain.PurchaseOrder> Get();
+		public IEnumerable<EskerAP.Domain.Header> Get();
 	}
 }

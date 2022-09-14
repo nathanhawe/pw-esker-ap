@@ -38,7 +38,7 @@ namespace Quickbase.IntegrationTests
 			Print(temp);
 		}
 
-		private void Print(IEnumerable<PurchaseOrder> lines)
+		private void Print(IEnumerable<Header> lines)
 		{
 			Console.WriteLine($"There are '{lines.Count()}' Purchase Orders:");
 			foreach (var line in lines)
@@ -47,10 +47,10 @@ namespace Quickbase.IntegrationTests
 			}
 		}
 
-		private void Print(PurchaseOrder line)
+		private void Print(Header line)
 		{
 			Console.WriteLine($"Record #{line.RecordId}");
-			var properties = typeof(PurchaseOrder).GetProperties();
+			var properties = typeof(Header).GetProperties();
 			foreach (var property in properties)
 			{
 				Console.Write($"     {property.Name}: '{property.GetValue(line)}'");
