@@ -10,11 +10,11 @@ using Microsoft.Extensions.Configuration;
 namespace Quickbase.IntegrationTests
 {
 	[TestClass]
-	public class PurchaseOrderRepoTests
+	public class ItemsRepoTests
 	{
 		private IConfigurationRoot _configuration;
 		private QuickBaseConnection _quickBaseConnection;
-		private PurchaseOrdersRepo _repo;
+		private ItemsRepo _repo;
 
 		[TestInitialize]
 		public void Setup()
@@ -28,7 +28,7 @@ namespace Quickbase.IntegrationTests
 			var logger = new MockLogger<QuickBaseConnection>();
 
 			_quickBaseConnection = new QuickBaseConnection(realm, usertoken, logger);
-			_repo = new PurchaseOrdersRepo(_quickBaseConnection);
+			_repo = new ItemsRepo(_quickBaseConnection);
 		}
 
 		[TestMethod]
@@ -38,19 +38,19 @@ namespace Quickbase.IntegrationTests
 			Print(temp);
 		}
 
-		private void Print(IEnumerable<PurchaseOrder> lines)
+		private void Print(IEnumerable<Item> lines)
 		{
-			Console.WriteLine($"There are '{lines.Count()}' Purchase Orders:");
+			Console.WriteLine($"There are '{lines.Count()}' Items:");
 			foreach (var line in lines)
 			{
 				Print(line);
 			}
 		}
 
-		private void Print(PurchaseOrder line)
+		private void Print(Item line)
 		{
 			Console.WriteLine($"Record #{line.RecordId}");
-			var properties = typeof(PurchaseOrder).GetProperties();
+			var properties = typeof(Item).GetProperties();
 			foreach (var property in properties)
 			{
 				Console.Write($"     {property.Name}: '{property.GetValue(line)}'");
