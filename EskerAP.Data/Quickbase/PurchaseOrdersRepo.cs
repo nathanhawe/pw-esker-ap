@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace EskerAP.Data.Quickbase
 {
-	public class PurchaseOrdersRepo : QuickbaseRepo<PurchaseOrder>, IPurchaseOrdersRepo
+	public class PurchaseOrdersRepo : QuickbaseRepo<Header>, IPurchaseOrdersRepo
 	{
 		public PurchaseOrdersRepo(IQuickBaseConnection quickBaseConnection)
 			: base(quickBaseConnection) { }
@@ -18,13 +18,26 @@ namespace EskerAP.Data.Quickbase
 		/// Queries the Purchase Orders table in Quickbase for incomplete records.
 		/// </summary>
 		/// <returns></returns>
-		public IEnumerable<PurchaseOrder> Get()
+		public IEnumerable<Header> Get()
 		{
-			var clist = $"{(int)PurchaseOrdersField.VendorId}.{(int)PurchaseOrdersField.PurposeOfPurchase}.{(int)PurchaseOrdersField.Date}.{(int)PurchaseOrdersField.Tax}.{(int)PurchaseOrdersField.MaximumFreightCharge}.{(int)PurchaseOrdersField.Total}.";
+			var clist = GetClist();
 			var slist = $"{(int)PurchaseOrdersField.RecordId}";
 			var query = $"{{{(int)PurchaseOrdersField.POPaid}.{ComparisonOperator.EX}.'0'}}AND{{{(int)PurchaseOrdersField.DateCreated}.{ComparisonOperator.OAF}.'01-01-2021'}}";
 
 			return base.Get(TableId.PurchaseOrders, query, clist, slist, ConvertToPurchaseOrder);
+		}
+
+		private string GetClist()
+		{
+			var clist = $"{(int)PurchaseOrdersField.VendorId}.";
+			clist += $"{(int)PurchaseOrdersField.PONo}.";
+			clist += $"{(int)PurchaseOrdersField.Date}.";
+			clist += $"{(int)PurchaseOrdersField.Total}.";
+			clist += $"{(int)PurchaseOrdersField.TotalAmountReceived}.";
+			clist += $"{(int)PurchaseOrdersField.OrderPlacedWithVendorBy}.";
+			clist += $"{(int)PurchaseOrdersField.RequestedBy}.";
+
+			return clist;
 		}
 
 		/// <summary>
@@ -33,15 +46,15 @@ namespace EskerAP.Data.Quickbase
 		/// </summary>
 		/// <param name="doQuery"></param>
 		/// <returns></returns>
-		private IEnumerable<PurchaseOrder> ConvertToPurchaseOrder(XElement doQuery)
+		private IEnumerable<Header> ConvertToPurchaseOrder(XElement doQuery)
 		{
-			var purchaseOrders = new List<PurchaseOrder>();
+			var purchaseOrders = new List<Header>();
 			var records = doQuery.Elements("record");
 
 			foreach (var record in records)
 			{
 				var recordId = ParseInt(record.Attribute("rid")?.Value) ?? 0;
-				var temp = new PurchaseOrder
+				var temp = new Header
 				{
 					RecordId = recordId
 				};
@@ -53,12 +66,13 @@ namespace EskerAP.Data.Quickbase
 
 					switch (fieldId)
 					{
-						case (int)PurchaseOrdersField.VendorId: temp.VendorId = field.Value?.ToUpper()?.Trim() ?? String.Empty; break;
-						case (int)PurchaseOrdersField.PurposeOfPurchase: temp.PurposeOfPurchase = field.Value?.Trim() ?? String.Empty; break;
-						case (int)PurchaseOrdersField.Date: temp.Date = ParseDate(field.Value); break;
-						case (int)PurchaseOrdersField.Tax: temp.Tax = ParseDecimal(field.Value) ?? 0; break;
-						case (int)PurchaseOrdersField.MaximumFreightCharge: temp.Freight = ParseDecimal(field.Value) ?? 0; break;
-						case (int)PurchaseOrdersField.Total: temp.Total = ParseDecimal(field.Value) ?? 0; break;							
+						case (int)PurchaseOrdersField.VendorId: temp.VendorNumber = field.Value?.ToUpper()?.Trim() ?? String.Empty; break;
+						case (int)PurchaseOrdersField.PONo: temp.OrderNumber = "Q" + field.Value?.ToUpper()?.Trim() ?? String.Empty; break;
+						case (int)PurchaseOrdersField.Date: temp.OrderDate = ParseDate(field.Value); break;
+						case (int)PurchaseOrdersField.Total: temp.OrderedAmount = ParseDecimal(field.Value) ?? 0; break;
+						case (int)PurchaseOrdersField.TotalAmountReceived: temp.DeliveredAmount = ParseDecimal(field.Value) ?? 0; break;
+						case (int)PurchaseOrdersField.OrderPlacedWithVendorBy: temp.Buyer = field.Value?.Trim() ?? String.Empty; break;
+						case (int)PurchaseOrdersField.RequestedBy: temp.Receiver = field.Value?.Trim() ?? String.Empty; break;
 					}
 				}
 				purchaseOrders.Add(temp);
