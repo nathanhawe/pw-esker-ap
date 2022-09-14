@@ -40,7 +40,7 @@ namespace Quickbase.IntegrationTests
 
 		private void Print(IEnumerable<PurchaseOrder> lines)
 		{
-			Console.WriteLine($"There are '{lines.Count()}' Plant Pay Lines:");
+			Console.WriteLine($"There are '{lines.Count()}' Purchase Orders:");
 			foreach (var line in lines)
 			{
 				Print(line);

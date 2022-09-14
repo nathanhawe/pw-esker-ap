@@ -53,7 +53,7 @@ namespace EskerAP.Data.Quickbase
 
 					switch (fieldId)
 					{
-						case (int)PurchaseOrdersField.VendorId: temp.VendorId = field.Value.ToUpper()?.Trim() ?? String.Empty; break;
+						case (int)PurchaseOrdersField.VendorId: temp.VendorId = field.Value?.ToUpper()?.Trim() ?? String.Empty; break;
 						case (int)PurchaseOrdersField.PurposeOfPurchase: temp.PurposeOfPurchase = field.Value?.Trim() ?? String.Empty; break;
 						case (int)PurchaseOrdersField.Date: temp.Date = ParseDate(field.Value); break;
 						case (int)PurchaseOrdersField.Tax: temp.Tax = ParseDecimal(field.Value) ?? 0; break;
