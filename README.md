@@ -20,6 +20,12 @@ the application secrets.  The structure of the file is:
 	"Quickbase":{
 		"Realm" : "gerawan",
 		"UserToken": "..."
+	},
+	"Famous":{
+		"UserId" : "...",
+		"Password" : "...",
+		"DataSource" : "...",
+		"Schema" : "...",
 	}
 }
 ```
@@ -28,3 +34,7 @@ the application secrets.  The structure of the file is:
 |-----|-------------|
 | Quickbase:UserToken | User token with access to the Purchase Order Request and Approval application |
 | Quickbase:Realm | The subdomain name used to access Quickbase e.g. "gerawan" |
+| Famous:UserId | The user id portion of the Oracle connection string e.g. "company_2_rpt". |
+| Famous:Password | The password portion of the Oracle connection string. |
+| Famous:DataSource | The Data Source portion of the Oracle connection string e.g. "xxx.xxx.xxx.xxx:1521/Famous". |
+| Famous:Schema | The Oracle database schema to use in queries. |

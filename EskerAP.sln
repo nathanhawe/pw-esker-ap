@@ -10,11 +10,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskerAP.Domain", "EskerAP.Domain\EskerAP.Domain.csproj", "{45844DAF-B70F-4E9F-81DE-29DF7696E84D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EskerAP.Domain", "EskerAP.Domain\EskerAP.Domain.csproj", "{45844DAF-B70F-4E9F-81DE-29DF7696E84D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskerAP.Data", "EskerAP.Data\EskerAP.Data.csproj", "{07962B1A-87FE-40EB-B6B7-618DE7B95BB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EskerAP.Data", "EskerAP.Data\EskerAP.Data.csproj", "{07962B1A-87FE-40EB-B6B7-618DE7B95BB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quickbase.IntegrationTests", "Quickbase.IntegrationTests\Quickbase.IntegrationTests.csproj", "{526C32F7-6AC9-4989-85E5-CCDD1CE10897}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quickbase.IntegrationTests", "Quickbase.IntegrationTests\Quickbase.IntegrationTests.csproj", "{526C32F7-6AC9-4989-85E5-CCDD1CE10897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Famous.IntegrationTests", "Famous.IntegrationTests\Famous.IntegrationTests.csproj", "{029FAA3B-4670-42F7-BD2B-749CC39F9406}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{526C32F7-6AC9-4989-85E5-CCDD1CE10897}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{526C32F7-6AC9-4989-85E5-CCDD1CE10897}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{526C32F7-6AC9-4989-85E5-CCDD1CE10897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{029FAA3B-4670-42F7-BD2B-749CC39F9406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{029FAA3B-4670-42F7-BD2B-749CC39F9406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{029FAA3B-4670-42F7-BD2B-749CC39F9406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{029FAA3B-4670-42F7-BD2B-749CC39F9406}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
