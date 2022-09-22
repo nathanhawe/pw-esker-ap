@@ -47,7 +47,7 @@ namespace EskerAP.Data.Famous
 				cmd.ExecuteNonQuery();
 
 				// Assign values
-				var byteArray = ByteArray();
+				var byteArray = GetVoucherByteArray(voucher);
 				var tempLob = (OracleClob)cmd.Parameters[0].Value;
 				tempLob.BeginChunkWrite();
 				tempLob.Write(byteArray, 0, byteArray.Length);
@@ -66,7 +66,7 @@ namespace EskerAP.Data.Famous
 				int userId = System.Convert.ToInt32(temp.Value);
 
 
-				// Make query
+				// Invoke ImportApVoucher Procedure
 				cmd.Parameters.Clear();
 				cmd.CommandText = $"{(_hasSchema ? _schema + "." : "")}FAPI.ImportApVouchers";
 				cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -81,7 +81,8 @@ namespace EskerAP.Data.Famous
 
 				cmd.ExecuteNonQuery();
 
-				// Errors with parsing
+				/* Error Handling */
+				// Check for errors with XML parsing
 				var temp2 = (OracleClob)cmd.Parameters["aclobOtherErrors"].Value;
 				if (!temp2.IsNull)
 				{
@@ -89,7 +90,7 @@ namespace EskerAP.Data.Famous
 					Console.WriteLine(errors);
 				}
 
-				// Errors logical errors
+				// Check for logical errors
 				var temp3 = (OracleClob)cmd.Parameters["aVouchers"].Value;
 				string status = temp3?.Value;
 				Console.WriteLine(status);
@@ -101,59 +102,43 @@ namespace EskerAP.Data.Famous
 			}
 		}
 
-		private byte[] ByteArray()
+		private byte[] GetVoucherByteArray(Voucher voucher)
 		{
-			var temp = XmlString();
+			var temp = GetVoucherXmlString(voucher);
 			var encoding = new UnicodeEncoding();
 			byte[] bytes = encoding.GetBytes(temp);
 
 			return bytes;
 		}
-		private string XmlString()
+		private string GetVoucherXmlString(Voucher voucher)
 		{
-			return @"
+			return @$"
 				<Vouchers>
 					<ROWSET>
 						<Voucher>
 							<EntryNumber/>
-							<VendorId>TEST</VendorId>
-							<InvoiceNumber>TEST012345</InvoiceNumber>
-							<HoldFlag>N</HoldFlag>
-							<InvoiceDate>2021-09-20</InvoiceDate>
-							<StubDescription/>
-							<PayTerms>PAYMENT</PayTerms>
-							<DueDate/>
-							<DiscountDate/>
-							<PayByDate/>
-							<DiscountAmount/>
-							<AccessGroupName/>
-							<PoSourceNumber/>
-							<AP1099Code/>
-							<VoucherAmount>100</VoucherAmount>
-							<VoucherImportStatus>Import Ready</VoucherImportStatus>
-							<AllowDuplicateVendorInvoice>N</AllowDuplicateVendorInvoice>
+							<VendorId>{StringHelper(voucher.VendorId,6)}</VendorId>
+							<InvoiceNumber>{StringHelper(voucher.InvoiceNumber, 12)}</InvoiceNumber>
+							<HoldFlag>{voucher.HoldFlag}</HoldFlag>
+							<InvoiceDate>{DateHelper(voucher.InvoiceDate)}</InvoiceDate>
+							<StubDescription>{StringHelper(voucher.StubDescription, 40)}</StubDescription>
+							<PayTerms>{StringHelper(voucher.PayTerms,20)}</PayTerms>
+							<DueDate>{DateHelper(voucher.DueDate)}</DueDate>
+							<DiscountDate>{DateHelper(voucher.DiscountDate)}</DiscountDate>
+							<PayByDate>{DateHelper(voucher.PayByDate)}</PayByDate>
+							<DiscountAmount>{voucher.DiscountAmount}</DiscountAmount>
+							<AccessGroupName>{StringHelper(voucher.AccessGroupName, 40)}</AccessGroupName>
+							<PoSourceNumber>{StringHelper(voucher.PoSourceNumber, 8)}</PoSourceNumber>
+							<AP1099Code>{StringHelper(voucher.AP1099Code, 20)}</AP1099Code>
+							<VoucherAmount>{voucher.VoucherAmount}</VoucherAmount>
+							<VoucherImportStatus>{voucher.VoucherImportStatus}</VoucherImportStatus>
+							<AllowDuplicateVendorInvoice>{voucher.AllowDuplicateVendorInvoice}</AllowDuplicateVendorInvoice>
 							<HeaderErrors/>
-							<LineCount>1</LineCount>
-							<NoteCount>0</NoteCount>
+							<LineCount>{voucher.LineCount}</LineCount>
+							<NoteCount>{voucher.NoteCount}</NoteCount>
 							<Lines>
 								<ROWSET>
-									<Line>
-										<CostCenterId>TEST</CostCenterId>
-										<GrowerBlockId/>
-										<PhaseId>1100</PhaseId>
-										<DepartmentId/>
-										<GlAccountId/>
-										<LineDescription>Testing line #1.</LineDescription>
-										<Hours/>
-										<Quantity>50</Quantity>
-										<Rate>2</Rate>
-										<Amount>100</Amount>
-										<ChargeId/>
-										<PoolId/>
-										<LotId/>
-										<LineReference/>
-										<LineErrors/>
-									</Line>
+									{GetVoucherLinesXmlString(voucher.Lines)}
 								</ROWSET>
 							</Lines>
 							<Notes/>
@@ -161,5 +146,41 @@ namespace EskerAP.Data.Famous
 					</ROWSET>
 				</Vouchers>";
 		}
+
+		private string GetVoucherLinesXmlString(List<VoucherItem> lines)
+		{
+			var sb = new StringBuilder();
+			foreach (var line in lines)
+			{
+				sb.AppendLine($@"
+					<Line>
+						<CostCenterId>{StringHelper(line.CostCenterId, 12)}</CostCenterId>
+						<GrowerBlockId>{StringHelper(line.GrowBlockId, 12)}</GrowerBlockId>
+						<PhaseId>{StringHelper(line.PhaseId, 6)}</PhaseId>
+						<DepartmentId>{StringHelper(line.DepartmentId, 6)}</DepartmentId>
+						<GlAccountId>{StringHelper(line.GlAccountCode, 12)}</GlAccountId>
+						<LineDescription>{StringHelper(line.LineDescription, 40)}</LineDescription>
+						<Hours>{(line.CostCenterId != null || line.GrowBlockId != null ? line.Hours.ToString() : "")}</Hours>
+						<Quantity>{line.Quantity}</Quantity>
+						<Rate>{line.Rate}</Rate>
+						<Amount>{line.Amount}</Amount>
+						<ChargeId>{StringHelper(line.ChargeId, 6)}</ChargeId>
+						<PoolId>{StringHelper(line.PoolId, 12)}</PoolId>
+						<LotId>{StringHelper(line.LotId, 12)}</LotId>
+						<LineReference>{StringHelper(line.LineReference, 12)}</LineReference>
+						<LineErrors/>
+					</Line>");
+			}
+			return sb.ToString();
+		}
+
+		private string StringHelper(string text, int maxLength)
+		{
+			if (string.IsNullOrWhiteSpace(text)) return "";
+
+			return text[..Math.Min(text.Length, maxLength)];
+		}
+
+		private string DateHelper(DateTime? date) => date?.ToString("yyyy-MM-dd") ?? "";
 	}
 }

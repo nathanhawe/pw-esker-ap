@@ -33,7 +33,23 @@ namespace Famous.IntegrationTests
 		[TestMethod]
 		public void AddVoucher()
 		{
-			_repo.ImportVoucher(new Voucher());
+			var testVoucher = new Voucher
+			{
+				VendorId = "TEST",
+				InvoiceNumber = "TEST012345678910", // Will be truncated to TEST01234567
+				InvoiceDate = new DateTime(2021,9,20),
+				PayTerms = "PAYMENT",
+			};
+			testVoucher.Lines.Add(new VoucherItem
+			{
+				CostCenterId = "TEST",
+				PhaseId = "1100",
+				LineDescription = "Testing Line #1.",
+				Quantity = 50,
+				Rate = 2,
+			});
+
+			_repo.ImportVoucher(testVoucher);
 		}
 
 		private void Print(IEnumerable<CostCenter> lines)

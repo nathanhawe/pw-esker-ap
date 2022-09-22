@@ -8,9 +8,10 @@ namespace EskerAP.Domain
 	{
 		public string VendorId { get; set; }
 		public string InvoiceNumber { get; set; }
-		public char HoldFlag { get; set; }
+		public char HoldFlag { get; set; } = 'N';
 		public DateTime InvoiceDate { get; set; }
 		public string StubDescription { get; set; }
+		public string PayTerms { get; set; }
 		public DateTime? DueDate { get; set; }
 		public DateTime? DiscountDate { get; set; }
 		public DateTime? PayByDate { get; set; }
@@ -18,7 +19,7 @@ namespace EskerAP.Domain
 		public string AccessGroupName { get; set; }
 		public string PoSourceNumber { get; set; }
 		public string AP1099Code { get; set; }
-		public decimal VoucherAmount { get; set; }
+		public decimal VoucherAmount => this.Lines.Sum(s => s.Amount);
 		public string VoucherImportStatus { get; set; } = Constants.VoucherImportStatus.ImportReady;
 		public char AllowDuplicateVendorInvoice { get; set; } = 'N';
 		public int LineCount => this.Lines.Count();
