@@ -21,20 +21,27 @@ the application secrets.  The structure of the file is:
 		"Realm" : "gerawan",
 		"UserToken": "..."
 	},
-	"Famous":{
+	"Oracle":{
 		"UserId" : "...",
 		"Password" : "...",
 		"DataSource" : "...",
-		"Schema" : "...",
+		"Schema" : "..."
+	},
+	"Famous":{
+		"UserId" : "...",
+		"Password" : "..."
 	}
 }
 ```
+
 ## Secrets
 | Key | Description |
 |-----|-------------|
 | Quickbase:UserToken | User token with access to the Purchase Order Request and Approval application |
 | Quickbase:Realm | The subdomain name used to access Quickbase e.g. "gerawan" |
-| Famous:UserId | The user id portion of the Oracle connection string e.g. "company_2_rpt". |
-| Famous:Password | The password portion of the Oracle connection string. |
-| Famous:DataSource | The Data Source portion of the Oracle connection string e.g. "xxx.xxx.xxx.xxx:1521/Famous". |
-| Famous:Schema | The Oracle database schema to use in queries. |
+| Oracle:UserId | The user id portion of the Oracle connection string e.g. "company_2_rpt". |
+| Oracle:Password | The password portion of the Oracle connection string. |
+| Oracle:DataSource | The Data Source portion of the Oracle connection string e.g. "xxx.xxx.xxx.xxx:1521/Famous". |
+| Oracle:Schema | The Oracle database schema to use in queries. |
+| Famous:UserId | The Famous user used to import vouchers. |
+| Famous:Password | The password for the Famous user used to import vouchers. |

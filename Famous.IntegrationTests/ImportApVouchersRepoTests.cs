@@ -9,10 +9,10 @@ using Microsoft.Extensions.Configuration;
 namespace Famous.IntegrationTests
 {
 	[TestClass]
-	public class CaCostCenterRepoTests
+	public class ImportApVouchersRepoTests
 	{
 		private IConfigurationRoot _configuration;
-		private CaCostCenterRepo _repo;
+		private ImportApVouchersRepo _repo;
 
 		[TestInitialize]
 		public void Setup()
@@ -24,15 +24,16 @@ namespace Famous.IntegrationTests
 			var dataSource = _configuration["Oracle:DataSource"];
 			var schema = _configuration["Oracle:Schema"];
 			var connectionString = $"User id={userId};Password={password};Data Source={dataSource}";
+			var famousUser = _configuration["Famous:UserId"];
+			var famousPassword = _configuration["Famous:Password"];
 
-			_repo = new CaCostCenterRepo(connectionString, schema);
+			_repo = new ImportApVouchersRepo(connectionString, schema, famousUser, famousPassword);
 		}
 		
 		[TestMethod]
-		public void GetCostCenters()
+		public void AddVoucher()
 		{
-			var temp = _repo.GetCostCenters();
-			Print(temp);
+			_repo.ImportVoucher(new Voucher());
 		}
 
 		private void Print(IEnumerable<CostCenter> lines)
