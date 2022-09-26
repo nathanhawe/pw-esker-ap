@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Oracle.ManagedDataAccess.Types;
 using Microsoft.Extensions.Logging;
+using System.Xml.Linq;
 
 namespace EskerAP.Data.Famous
 {
@@ -27,9 +28,11 @@ namespace EskerAP.Data.Famous
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
-		public void ImportVoucher(Domain.Voucher voucher)
+		public ImportApVoucherResponse ImportVoucher(Voucher voucher)
 		{
 			_logger.LogDebug("Starting voucher import for voucher:'{voucher}' with connection string:'{connectionString}', Famous user ID:'{famousUserId}', and Famous password: '{famousPassword}'.", voucher, _connectionString, _famousUserId, _famousPassword);
+
+			var response = new ImportApVoucherResponse();
 
 			using OracleConnection con = new OracleConnection(_connectionString);
 			using OracleCommand cmd = con.CreateCommand();
@@ -81,25 +84,62 @@ namespace EskerAP.Data.Famous
 
 				cmd.ExecuteNonQuery();
 
-				/* Error Handling */
+				/* Error Handling and Response Creation */
+				response.SucceededCount = ((OracleDecimal)cmd.Parameters["anSucceeded"].Value).ToInt32();
+				response.Failedcount = ((OracleDecimal)cmd.Parameters["anFailed"].Value).ToInt32();
+				response.SkippedCount = ((OracleDecimal)cmd.Parameters["anSkipped"].Value).ToInt32();
+
 				// Check for errors with XML parsing
-				var temp2 = (OracleClob)cmd.Parameters["aclobOtherErrors"].Value;
-				if (!temp2.IsNull)
+				var otherErrors = (OracleClob)cmd.Parameters["aclobOtherErrors"].Value;
+				if (!otherErrors.IsNull)
 				{
-					string errors = temp2?.Value;
-					Console.WriteLine(errors);
+					response.OtherErrors = otherErrors?.Value;
 				}
 
 				// Check for logical errors
-				var temp3 = (OracleClob)cmd.Parameters["aVouchers"].Value;
-				string status = temp3?.Value;
-				Console.WriteLine(status);
-
+				var voucherOutClob = (OracleClob)cmd.Parameters["aVouchers"].Value;
+				if (!voucherOutClob.IsNull)
+				{
+					response.RawXmlVoucherResponse = voucherOutClob?.Value;
+					var document = XElement.Parse(voucherOutClob?.Value);
+					response.HeaderErrors = GetHeaderErrors(document);
+					response.LineErrors = GetLineErrors(document);
+				}
+				
 			}
 			catch(Exception ex)
 			{
 				_logger.LogError("An exception occured while importing voucher for {VendorId} and {InvoiceNumber}. Exception: {Message}", voucher.VendorId, voucher.InvoiceNumber, ex.Message);
+				response.Exception = ex;
 			}
+
+			return response;
+		}
+
+		private string GetHeaderErrors(XElement document)
+		{
+			var sb = new StringBuilder();
+			var headerErrors = document.Descendants("HeaderErrors");
+			foreach (var headerError in headerErrors)
+			{
+				sb.Append(headerError?.Value?.Trim());
+			}
+			return sb.ToString();
+		}
+
+		private List<string> GetLineErrors(XElement document)
+		{
+			var response = new List<string>();
+			var lineErrors = document.Descendants("LineErrors");
+			foreach(var error in lineErrors)
+			{ 
+				if(!string.IsNullOrWhiteSpace(error?.Value))
+				{
+					response.Add(error.Value);
+				}
+			}
+
+			return response;
 		}
 
 		private byte[] GetVoucherByteArray(Voucher voucher)

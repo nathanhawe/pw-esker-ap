@@ -51,26 +51,108 @@ namespace Famous.IntegrationTests
 				Rate = 2,
 			});
 
-			_repo.ImportVoucher(testVoucher);
+			var response = _repo.ImportVoucher(testVoucher);
+			Print(response);
 		}
 
-		private void Print(IEnumerable<CostCenter> lines)
+		[TestMethod]
+		public void HeaderErrorsReturnFailedImportResponse()
 		{
-			Console.WriteLine($"There are '{lines.Count()}' Cost Centers:");
-			foreach (var line in lines)
+			var testVoucher = new Voucher
 			{
-				Print(line);
-			}
+				VendorId = "TEST",
+				InvoiceNumber = "TEST01234560", 
+				InvoiceDate = new DateTime(2021, 9, 20),
+				PayTerms = "",
+			};
+			testVoucher.Lines.Add(new VoucherItem
+			{
+				CostCenterId = "TEST",
+				PhaseId = "1100",
+				LineDescription = "Testing Line #1.",
+				Quantity = 50,
+				Rate = 2,
+			});
+
+			var response = _repo.ImportVoucher(testVoucher);
+			Print(response);
+			Assert.IsNotNull(response);
+			Assert.IsFalse(response.ImportWasSuccessful);
+			Assert.IsFalse(String.IsNullOrWhiteSpace(response.HeaderErrors));
+			Assert.AreEqual(response.HeaderErrors, "pay terms is required");
 		}
 
-		private void Print(CostCenter line)
+		[TestMethod]
+		public void LineErrorsReturnFailedImportResponse()
 		{
-			Console.WriteLine("");
-			var properties = typeof(CostCenter).GetProperties();
-			foreach (var property in properties)
+			var testVoucher = new Voucher
 			{
-				Console.Write($"     {property.Name}: '{property.GetValue(line)}'");
+				VendorId = "TEST",
+				InvoiceNumber = "TEST01234560",
+				InvoiceDate = new DateTime(2021, 9, 20),
+				PayTerms = "PAYMENT",
+			};
+			testVoucher.Lines.Add(new VoucherItem
+			{
+				CostCenterId = "",
+				PhaseId = "1100",
+				LineDescription = "Testing Line #1.",
+				Quantity = 50,
+				Rate = 2,
+			});
+
+			var response = _repo.ImportVoucher(testVoucher);
+			Print(response);
+			Assert.IsNotNull(response);
+			Assert.IsFalse(response.ImportWasSuccessful);
+			Assert.IsTrue(response.LineErrors.Count() > 0);
+		}
+
+		[TestMethod]
+		public void ExceptionsReturnFailedImportResponse()
+		{
+			var testVoucher = new Voucher
+			{
+				VendorId = "TEST",
+				InvoiceNumber = "TEST012345678910",
+				InvoiceDate = new DateTime(2021, 9, 20),
+				PayTerms = "PAYMENT",
+			};
+			testVoucher.Lines.Add(new VoucherItem
+			{
+				CostCenterId = "TEST",
+				PhaseId = "1100",
+				LineDescription = "Testing Line #1.",
+				Quantity = 50,
+				Rate = 2,
+			});
+
+			var testRepo = new ImportApVouchersRepo("", "", "", "", _logger);
+			var response = testRepo.ImportVoucher(testVoucher);
+			Print(response);
+
+			Assert.IsNotNull(response);
+			Assert.IsFalse(response.ImportWasSuccessful);
+			Assert.IsNotNull(response.Exception);
+			Assert.AreEqual(response.Exception.Message, "OracleConnection.ConnectionString is invalid");
+		}
+
+		private void Print(ImportApVoucherResponse response)
+		{
+			Console.WriteLine($"ImportWasSuccessful: '{response.ImportWasSuccessful}'");
+			Console.WriteLine($"SucceededCount: '{response.SucceededCount}'");
+			Console.WriteLine($"FailedCount: '{response.Failedcount}'");
+			Console.WriteLine($"SkippedCount: '{response.SkippedCount}'");
+			Console.WriteLine($"OtherErrors: '{response.OtherErrors}'");
+			Console.WriteLine($"HeaderErrors: '{response.HeaderErrors}'");
+			Console.WriteLine($"HasException: '{!(response.Exception == null)}'");
+			Console.WriteLine($"ExceptionMessage: '{response.Exception?.Message}'");
+			Console.WriteLine($"LineErrors:");
+			foreach (var line in response.LineErrors)
+			{
+				Console.WriteLine(line);
 			}
+			Console.WriteLine($"RawVoucherXml: '{response.RawXmlVoucherResponse}'");
 		}
 	}
 }

@@ -4,6 +4,6 @@ namespace EskerAP.Data.Famous
 {
 	public interface IImportApVouchersRepo
 	{
-		public void ImportVoucher(Domain.Voucher voucher);
+		public Domain.ImportApVoucherResponse ImportVoucher(Domain.Voucher voucher);
 	}
 }
