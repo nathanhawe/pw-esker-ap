@@ -1,37 +1,37 @@
 ﻿using EskerAP.Domain;
 using Oracle.ManagedDataAccess.Client;
 using System;
-using System.Data.OracleClient;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Text;
 using Oracle.ManagedDataAccess.Types;
-using System.Data;
+using Microsoft.Extensions.Logging;
 
 namespace EskerAP.Data.Famous
 {
 	public class ImportApVouchersRepo : IImportApVouchersRepo
 	{
-		private string _connectionString;
-		private string _schema;
-		private bool _hasSchema;
-		private string _famousUserId;
-		private string _famousPassword;
+		private readonly string _connectionString;
+		private readonly string _schema;
+		private readonly bool _hasSchema;
+		private readonly string _famousUserId;
+		private readonly string _famousPassword;
+		private readonly ILogger<ImportApVouchersRepo> _logger;
 
-		public ImportApVouchersRepo(string connectionString, string schema, string famousUserId, string famousPassword)
+		public ImportApVouchersRepo(string connectionString, string schema, string famousUserId, string famousPassword, ILogger<ImportApVouchersRepo> logger)
 		{
 			_connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
 			_schema = schema?.Trim();
 			_hasSchema = !String.IsNullOrWhiteSpace(schema);
 			_famousUserId = famousUserId ?? throw new ArgumentNullException(nameof(famousUserId));
 			_famousPassword = famousPassword ?? throw new ArgumentNullException(nameof(famousPassword));
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		public void ImportVoucher(Domain.Voucher voucher)
 		{
-			using OracleConnection con = new OracleConnection(_connectionString);
+			_logger.LogDebug("Starting voucher import for voucher:'{voucher}' with connection string:'{connectionString}', Famous user ID:'{famousUserId}', and Famous password: '{famousPassword}'.", voucher, _connectionString, _famousUserId, _famousPassword);
 
+			using OracleConnection con = new OracleConnection(_connectionString);
 			using OracleCommand cmd = con.CreateCommand();
 			try
 			{
@@ -98,7 +98,7 @@ namespace EskerAP.Data.Famous
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogError("An exception occured while importing voucher for {VendorId} and {InvoiceNumber}. Exception: {Message}", voucher.VendorId, voucher.InvoiceNumber, ex.Message);
 			}
 		}
 

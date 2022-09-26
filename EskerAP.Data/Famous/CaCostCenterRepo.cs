@@ -1,4 +1,5 @@
 ﻿using EskerAP.Domain;
+using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,23 @@ namespace EskerAP.Data.Famous
 {
 	public class CaCostCenterRepo : ICaCostCenterRepo
 	{
-		private string _connectionString;
-		private string _schema;
-		private bool _hasSchema;
+		private readonly string _connectionString;
+		private readonly string _schema;
+		private readonly bool _hasSchema;
+		private readonly ILogger<CaCostCenterRepo> _logger;
 
-		public CaCostCenterRepo(string connectionString, string schema)
+		public CaCostCenterRepo(string connectionString, string schema, ILogger<CaCostCenterRepo> logger)
 		{
 			_connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
 			_schema = schema?.Trim();
 			_hasSchema = !String.IsNullOrWhiteSpace(schema);
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		public IEnumerable<Domain.CostCenter> GetCostCenters()
 		{
+			_logger.LogDebug("GetCostCenters() Invoked");
+
 			var costCenters = new List<CostCenter>();
 			using OracleConnection con = new OracleConnection(_connectionString);
 			using OracleCommand cmd = con.CreateCommand();
@@ -47,7 +52,7 @@ namespace EskerAP.Data.Famous
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogError("An exception occured while attempting to get Cost Centers from Famous: {Message}.", ex.Message);
 			}
 
 			return costCenters;

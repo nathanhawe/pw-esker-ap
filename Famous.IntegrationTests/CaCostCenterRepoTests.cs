@@ -13,6 +13,7 @@ namespace Famous.IntegrationTests
 	{
 		private IConfigurationRoot _configuration;
 		private CaCostCenterRepo _repo;
+		private readonly MockLogger<CaCostCenterRepo> _logger = new MockLogger<CaCostCenterRepo>();
 
 		[TestInitialize]
 		public void Setup()
@@ -25,7 +26,7 @@ namespace Famous.IntegrationTests
 			var schema = _configuration["Oracle:Schema"];
 			var connectionString = $"User id={userId};Password={password};Data Source={dataSource}";
 
-			_repo = new CaCostCenterRepo(connectionString, schema);
+			_repo = new CaCostCenterRepo(connectionString, schema, _logger);
 		}
 		
 		[TestMethod]

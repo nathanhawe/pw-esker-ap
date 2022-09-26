@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Famous.IntegrationTests
 {
@@ -13,6 +14,7 @@ namespace Famous.IntegrationTests
 	{
 		private IConfigurationRoot _configuration;
 		private ImportApVouchersRepo _repo;
+		private readonly MockLogger<ImportApVouchersRepo> _logger = new MockLogger<ImportApVouchersRepo>();
 
 		[TestInitialize]
 		public void Setup()
@@ -27,7 +29,7 @@ namespace Famous.IntegrationTests
 			var famousUser = _configuration["Famous:UserId"];
 			var famousPassword = _configuration["Famous:Password"];
 
-			_repo = new ImportApVouchersRepo(connectionString, schema, famousUser, famousPassword);
+			_repo = new ImportApVouchersRepo(connectionString, schema, famousUser, famousPassword, _logger);
 		}
 		
 		[TestMethod]
