@@ -172,5 +172,11 @@ namespace EskerAP.Domain
 		/// </summary>
 		public bool NoGoodsReceipt { get; set; } = true;
 
+		/// <summary>
+		/// Indicates the Famous transaction type which may be used to process items by other services.
+		/// 1 - Product
+		/// 2 - Charge
+		/// </summary>
+		public string TRXTYPE { get; set; }
 	}
 }
