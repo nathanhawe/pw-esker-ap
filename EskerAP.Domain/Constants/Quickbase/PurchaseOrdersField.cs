@@ -52,12 +52,15 @@
 		/// </summary>
 		OrderPlacedWithVendorBy = 561,
 
-
-
 		/// <summary>
 		/// [PO Paid] - Checkbox indicates whether the purchase order has been completely paid.
 		/// </summary>
 		POPaid = 679,
+
+		/// <summary>
+		/// [Is this Purchase Related to a CapEX?] - Text
+		/// </summary>
+		IsCapEx = 888,
 
 		/// <summary>
 		/// [VENDORID] - String

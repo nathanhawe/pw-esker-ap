@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using EskerAP.Domain;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,35 @@ namespace EskerAP.Service
 				// Query the details
 				var details = _qbDetailRepo.Get().ToList();
 
-				// TODO: Add freight and tax detail from QB headers
+				// Add freight and tax detail from QB headers
+				var taxLines = headers.Where(x => x.Tax > 0).Select(x => new Item
+				{
+					CompanyCode = companyCode,
+					VendorNumber = x.VendorNumber,
+					OrderNumber = x.OrderNumber,
+					OrderDate = x.OrderDate,
+					ItemNumber = "t01",
+					Description = "Tax amount from QB PO header",
+					OrderedAmount = x.Tax,
+					CostType = (x.IsCapEx ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx),
+					ItemType = Domain.Constants.ItemType.AmountBased
+				}).ToList();
+
+				var freightLines = headers.Where(x => x.Freight > 0).Select(x => new Item
+				{
+					CompanyCode = companyCode,
+					VendorNumber = x.VendorNumber,
+					OrderNumber = x.OrderNumber,
+					OrderDate = x.OrderDate,
+					ItemNumber = "f01",
+					Description = "Freight amount from QB PO header",
+					OrderedAmount = x.Freight,
+					CostType = (x.IsCapEx ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx),
+					ItemType = Domain.Constants.ItemType.AmountBased
+				}).ToList();
+
+				details.AddRange(taxLines);
+				details.AddRange(freightLines);
 
 				// Set the company code for all details.
 				details.ForEach(x => x.CompanyCode = companyCode);

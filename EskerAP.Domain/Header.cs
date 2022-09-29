@@ -11,6 +11,21 @@ namespace EskerAP.Domain
 		public int RecordId { get; set; }
 
 		/// <summary>
+		/// The amount of tax from the Quickbase header
+		/// </summary>
+		public decimal Tax { get; set; }
+
+		/// <summary>
+		/// The amount of freight from the Quickbase header
+		/// </summary>
+		public decimal Freight { get; set; }
+
+		/// <summary>
+		/// Indicates if the Quickbase purchase order is CapEx
+		/// </summary>
+		public bool IsCapEx { get; set; } = false;
+
+		/// <summary>
 		/// The unique identifier for the specific company defined in Esker.
 		/// </summary>
 		public string CompanyCode { get; set; }
