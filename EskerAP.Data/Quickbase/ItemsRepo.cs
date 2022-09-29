@@ -64,7 +64,8 @@ namespace EskerAP.Data.Quickbase
 				var recordId = ParseInt(record.Attribute("rid")?.Value) ?? 0;
 				var temp = new Item
 				{
-					RecordId = recordId
+					RecordId = recordId,
+					ItemNumber = recordId.ToString(),
 				};
 
 				var fields = record.Elements("f");
