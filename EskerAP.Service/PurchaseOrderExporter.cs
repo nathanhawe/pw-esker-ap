@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace EskerAP.Service
 {
-	public class PurchaseOrderExporter : Exporter, Interface.IPurchaseOrderExporter
+	public class PurchaseOrderExporter : BaseExporter, Interface.IPurchaseOrderExporter
 	{
 		private readonly ILogger _logger;
 		private readonly Data.Famous.IPurchaseOrderHeaderRepo _faHeaderRepo;

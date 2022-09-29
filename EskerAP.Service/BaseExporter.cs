@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EskerAP.Service
 {
-	public abstract class Exporter
+	public abstract class BaseExporter
 	{
 		protected void EnsureFolderExists(string folderPath)
 		{

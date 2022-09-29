@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace EskerAP.Service
 {
-	public class CostCenterExporter : Exporter, Interface.ICostCenterExporter
+	public class CostCenterExporter : BaseExporter, Interface.ICostCenterExporter
 	{
 		private readonly ILogger _logger;
 		private readonly ICaCostCenterRepo _caCostCenterRepo;

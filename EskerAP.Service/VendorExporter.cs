@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace EskerAP.Service
 {
-	public class VendorExporter : Exporter, Interface.IVendorExporter
+	public class VendorExporter : BaseExporter, Interface.IVendorExporter
 	{
 		private readonly ILogger _logger;
 		private readonly IApVendorRepo _repo;

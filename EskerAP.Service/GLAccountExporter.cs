@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace EskerAP.Service
 {
-	public class GLAccountExporter : Exporter, Interface.IGLAccountExporter
+	public class GLAccountExporter : BaseExporter, Interface.IGLAccountExporter
 	{
 		private readonly ILogger _logger;
 		private readonly IGLAccountRepo _repo;
