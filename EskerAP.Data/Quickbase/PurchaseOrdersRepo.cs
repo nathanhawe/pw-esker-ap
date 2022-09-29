@@ -36,6 +36,9 @@ namespace EskerAP.Data.Quickbase
 			clist += $"{(int)PurchaseOrdersField.TotalAmountReceived}.";
 			clist += $"{(int)PurchaseOrdersField.OrderPlacedWithVendorBy}.";
 			clist += $"{(int)PurchaseOrdersField.RequestedBy}.";
+			clist += $"{(int)PurchaseOrdersField.Tax}.";
+			clist += $"{(int)PurchaseOrdersField.MaximumFreightCharge}.";
+			clist += $"{(int)PurchaseOrdersField.IsCapEx}.";
 
 			return clist;
 		}
@@ -73,6 +76,9 @@ namespace EskerAP.Data.Quickbase
 						case (int)PurchaseOrdersField.TotalAmountReceived: temp.DeliveredAmount = ParseDecimal(field.Value) ?? 0; break;
 						case (int)PurchaseOrdersField.OrderPlacedWithVendorBy: temp.Buyer = field.Value?.Trim() ?? String.Empty; break;
 						case (int)PurchaseOrdersField.RequestedBy: temp.Receiver = field.Value?.Trim() ?? String.Empty; break;
+						case (int)PurchaseOrdersField.Tax: temp.Tax = ParseDecimal(field.Value) ?? 0; break;
+						case (int)PurchaseOrdersField.MaximumFreightCharge: temp.Freight = ParseDecimal(field.Value) ?? 0; break;
+						case (int)PurchaseOrdersField.IsCapEx: temp.IsCapEx = (field.Value?.ToUpper() ??"") == "YES"; break;
 					}
 				}
 				purchaseOrders.Add(temp);
