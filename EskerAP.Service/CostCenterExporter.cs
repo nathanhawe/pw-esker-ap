@@ -27,7 +27,7 @@ namespace EskerAP.Service
 		public void ExportCostCenters(string companyCode)
 		{
 			_logger.LogDebug("Invoking CostCenterExporter.ExportCostCenters() to folder:'{FolderPath}'", _folderPath);
-			var filePath = $"{_folderPath}\\FAM__Costcenters__{DateTime.Now.ToFileTimeUtc()}.csv";
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Costcenters, _folderPath);
 
 			try
 			{

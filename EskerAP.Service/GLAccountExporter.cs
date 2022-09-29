@@ -27,7 +27,7 @@ namespace EskerAP.Service
 		public void ExportGLAccounts(string companyCode)
 		{
 			_logger.LogDebug("Invoking GLAccountExporter.ExportGLAccounts() to folder:'{FolderPath}'", _folderPath);
-			var filePath = $"{_folderPath}\\FAM__GLaccount__{DateTime.Now:yyyyMMddHHmmss}.csv";
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.GLaccount, _folderPath);
 
 			try
 			{

@@ -27,12 +27,12 @@ namespace EskerAP.Service
 		public void ExportVendors(string companyCode)
 		{
 			_logger.LogDebug("Invoking VendorExporter.ExportVendors() to folder:'{FolderPath}'", _folderPath);
-			var filePath = $"{_folderPath}\\FAM__Vendors__{DateTime.Now.ToFileTimeUtc()}.csv";
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Vendors, _folderPath);
 
 			try
 			{
 
-				// Query the cost centers
+				// Query the vendors
 				var vendors = _repo.GetVendors().ToList();
 
 				// Set the company code for all vendors.
