@@ -16,7 +16,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EskerAP.Data", "EskerAP.Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quickbase.IntegrationTests", "Quickbase.IntegrationTests\Quickbase.IntegrationTests.csproj", "{526C32F7-6AC9-4989-85E5-CCDD1CE10897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Famous.IntegrationTests", "Famous.IntegrationTests\Famous.IntegrationTests.csproj", "{029FAA3B-4670-42F7-BD2B-749CC39F9406}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Famous.IntegrationTests", "Famous.IntegrationTests\Famous.IntegrationTests.csproj", "{029FAA3B-4670-42F7-BD2B-749CC39F9406}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EskerAP.Service", "EskerAP.Service\EskerAP.Service.csproj", "{62D0C31F-2FA6-4A40-9F87-9AEDEBD3432A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EskerAp.UnitTests", "EskerAp.UnitTests\EskerAp.UnitTests.csproj", "{E4EBF991-5968-436A-BBC0-55969AA773B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskerAP.Infrastructure", "EskerAP.Infrastructure\EskerAP.Infrastructure.csproj", "{7E47C3AB-E62C-4DC7-B575-90F07C41189A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +50,18 @@ Global
 		{029FAA3B-4670-42F7-BD2B-749CC39F9406}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{029FAA3B-4670-42F7-BD2B-749CC39F9406}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{029FAA3B-4670-42F7-BD2B-749CC39F9406}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D0C31F-2FA6-4A40-9F87-9AEDEBD3432A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D0C31F-2FA6-4A40-9F87-9AEDEBD3432A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D0C31F-2FA6-4A40-9F87-9AEDEBD3432A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D0C31F-2FA6-4A40-9F87-9AEDEBD3432A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4EBF991-5968-436A-BBC0-55969AA773B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4EBF991-5968-436A-BBC0-55969AA773B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4EBF991-5968-436A-BBC0-55969AA773B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4EBF991-5968-436A-BBC0-55969AA773B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E47C3AB-E62C-4DC7-B575-90F07C41189A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E47C3AB-E62C-4DC7-B575-90F07C41189A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E47C3AB-E62C-4DC7-B575-90F07C41189A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E47C3AB-E62C-4DC7-B575-90F07C41189A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

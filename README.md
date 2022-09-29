@@ -30,6 +30,13 @@ the application secrets.  The structure of the file is:
 	"Famous":{
 		"UserId" : "...",
 		"Password" : "..."
+	},
+	"Esker": {
+		"Folders": {
+			"MasterData" : "...",
+			"Invoices" : "...",
+			"Ack" : "..."
+		}
 	}
 }
 ```
@@ -45,3 +52,6 @@ the application secrets.  The structure of the file is:
 | Oracle:Schema | The Oracle database schema to use in queries. |
 | Famous:UserId | The Famous user used to import vouchers. |
 | Famous:Password | The password for the Famous user used to import vouchers. |
+| Esker:Folders:MasterData | The folder used to export ERP data to Esker e.g. "In_MasterData" |
+| Esker:Folders:Invoices | The folder used to import invoice XML files from Esker e.g. "Out" |
+| Esker:Folders:Ack | The folder used to export ERP acknowledgement files e.g. "ErpAck" |

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="28.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EskerAP.Data\EskerAP.Data.csproj" />
+    <ProjectReference Include="..\EskerAP.Domain\EskerAP.Domain.csproj" />
+    <ProjectReference Include="..\EskerAP.Infrastructure\EskerAP.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
