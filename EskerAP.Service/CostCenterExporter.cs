@@ -24,7 +24,7 @@ namespace EskerAP.Service
 			base.EnsureFolderExists(_folderPath);
 		}
 
-		public void ExportCostCenters()
+		public void ExportCostCenters(string companyCode)
 		{
 			_logger.LogDebug("Invoking CostCenterExporter.ExportCostCenters() to folder:'{FolderPath}'", _folderPath);
 			var filePath = $"{_folderPath}\\FAM__Costcenters__{DateTime.Now.ToFileTimeUtc()}.csv";
@@ -35,7 +35,8 @@ namespace EskerAP.Service
 				// Query the cost centers
 				var costCenters = _caCostCenterRepo.GetCostCenters().ToList();
 
-				// TODO: Update the company code for all cost centers.
+				// Set the company code for all cost centers.
+				costCenters.ForEach(x => x.CompanyCode = companyCode);
 
 				// Convert to CSV document
 				using var writer = new StreamWriter(filePath);

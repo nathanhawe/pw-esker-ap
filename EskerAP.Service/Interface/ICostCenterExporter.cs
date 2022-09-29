@@ -2,6 +2,6 @@
 {
 	public interface ICostCenterExporter
 	{
-		public void ExportCostCenters();
+		public void ExportCostCenters(string companyCode);
 	}
 }
