@@ -53,7 +53,7 @@ namespace EskerAp.UnitTests
 				_quickbaseDetailRepo,
 				_folderPath);
 
-			exporter.ExportPurchaseOrders("TestCompany01");
+			exporter.ExportPurchaseOrders("PW01");
 
 		}
 	}

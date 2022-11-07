@@ -31,7 +31,7 @@ namespace EskerAp.UnitTests
 		public void Export()
 		{
 			var exporter = new GLAccountExporter(new MockLogger<GLAccountExporter>(), _repo, _folderPath);
-			exporter.ExportGLAccounts("TestCompany01");
+			exporter.ExportGLAccounts("PW01");
 
 		}
 	}

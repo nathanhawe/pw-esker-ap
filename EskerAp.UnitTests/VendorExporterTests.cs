@@ -31,7 +31,7 @@ namespace EskerAp.UnitTests
 		public void Export()
 		{
 			var exporter = new VendorExporter(new MockLogger<VendorExporter>(), _repo, _folderPath);
-			exporter.ExportVendors("TestCompany01");
+			exporter.ExportVendors("PW01");
 
 		}
 	}
