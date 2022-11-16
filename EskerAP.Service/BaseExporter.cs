@@ -27,6 +27,7 @@ namespace EskerAP.Service
 			{
 				case Erp.Famous: return "FA";
 				case Erp.Quickbase: return "QB";
+				case Erp.Combined: return "CMB";
 				default: return "";
 			}
 		}
