@@ -10,7 +10,7 @@ namespace EskerAP.Infrastructure.Maps
 			Map(x => x.CompanyCode).Index(0).Name("CompanyCode__");
 			Map(x => x.VendorNumber).Index(1).Name("VendorNumber__");
 			Map(x => x.OrderNumber).Index(2).Name("OrderNumber__");
-			Map(x => x.OrderDate).Index(3).Name("OrderDate))");
+			Map(x => x.OrderDate).Index(3).Name("OrderDate__");
 			Map(x => x.ItemNumber).Index(4).Name("ItemNumber__");
 			Map(x => x.PartNumber).Index(5).Name("PartNumber__");
 			Map(x => x.ItemType).Index(6).Name("ItemType__");
