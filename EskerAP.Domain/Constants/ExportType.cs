@@ -13,5 +13,6 @@
 		Taxcodes = 9,
 		Vendors = 10,
 		Paymentterms = 11,
+		Phases = 12,
 	}
 }
