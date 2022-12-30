@@ -36,6 +36,12 @@ the application secrets.  The structure of the file is:
 			"MasterData" : "...",
 			"Invoices" : "...",
 			"Ack" : "..."
+		},
+		"SFTP": {
+			"Host" : "...",
+			"Port" : 22,
+			"Username" : "...",
+			"Password" : "..."
 		}
 	}
 }
@@ -55,3 +61,7 @@ the application secrets.  The structure of the file is:
 | Esker:Folders:MasterData | The folder used to export ERP data to Esker e.g. "In_MasterData" |
 | Esker:Folders:Invoices | The folder used to import invoice XML files from Esker e.g. "Out" |
 | Esker:Folders:Ack | The folder used to export ERP acknowledgement files e.g. "ErpAck" |
+| Esker:SFTP:Host | The SFTP host name |
+| Esker:SFTP:Port | The SFTP port number |
+| Esker:SFTP:Username | The SFTP username |
+| Esker:SFTP:Password | The SFTP password |
