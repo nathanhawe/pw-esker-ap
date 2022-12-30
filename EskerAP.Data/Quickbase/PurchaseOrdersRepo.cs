@@ -22,7 +22,7 @@ namespace EskerAP.Data.Quickbase
 		{
 			var clist = GetClist();
 			var slist = $"{(int)PurchaseOrdersField.RecordId}";
-			var query = $"{{{(int)PurchaseOrdersField.POPaid}.{ComparisonOperator.EX}.'0'}}AND{{{(int)PurchaseOrdersField.DateCreated}.{ComparisonOperator.OAF}.'01-01-2021'}}";
+			var query = $"{{{(int)PurchaseOrdersField.POPaid}.{ComparisonOperator.EX}.'0'}}AND{{{(int)PurchaseOrdersField.DateCreated}.{ComparisonOperator.OAF}.'01-01-2021'}}AND{{{(int)PurchaseOrdersField.PORejected}.{ComparisonOperator.EX}.'0'}}";
 
 			return base.Get(TableId.PurchaseOrders, query, clist, slist, ConvertToPurchaseOrder);
 		}

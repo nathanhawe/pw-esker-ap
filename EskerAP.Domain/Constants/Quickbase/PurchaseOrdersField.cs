@@ -48,6 +48,11 @@
 		PONo = 507,
 
 		/// <summary>
+		/// [PO Rejected] - Checkbox indicates whether the purchase order was rejected during the approval phase.
+		/// </summary>
+		PORejected = 520,
+
+		/// <summary>
 		/// [Order Placed With Vendor By] - User 
 		/// </summary>
 		OrderPlacedWithVendorBy = 561,

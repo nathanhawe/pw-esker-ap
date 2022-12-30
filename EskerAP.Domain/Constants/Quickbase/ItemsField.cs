@@ -66,5 +66,10 @@
 		/// [PO - Is this Purchase Related to a CapEx?] - String where "Yes" indicates that the purchase order is CapEx.
 		/// </summary>
 		IsCapEx = 58,
+
+		/// <summary>
+		/// [PO - PO Rejected] - Checkbox indicates that the purchase order was rejected during the approval phase.
+		/// </summary>
+		PORejected = 60,
 	}
 }
