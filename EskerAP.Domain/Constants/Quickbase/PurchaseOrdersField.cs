@@ -23,6 +23,11 @@
 		RequestedBy = 8,
 
 		/// <summary>
+		/// [PO Number] - Numeric
+		/// </summary>
+		PONumber = 20,
+
+		/// <summary>
 		/// [Total] - Currency
 		/// </summary>
 		Total = 51,
@@ -41,11 +46,6 @@
 		/// [Tax] - Currency
 		/// </summary>
 		Tax = 114,
-
-		/// <summary>
-		/// [PO No.] - String that concatenates the PO Number with a location prefix
-		/// </summary>
-		PONo = 507,
 
 		/// <summary>
 		/// [PO Rejected] - Checkbox indicates whether the purchase order was rejected during the approval phase.

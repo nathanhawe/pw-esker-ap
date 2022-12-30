@@ -48,9 +48,9 @@
 		TotalQuantityReceived = 19,
 
 		/// <summary>
-		/// [PO No.] - String indicates the the purchase order number the item belongs to.
+		/// [PO No.] - Numeric indicates the the purchase order number the item belongs to.
 		/// </summary>
-		PONumber = 23,
+		PONumber = 61,
 
 		/// <summary>
 		/// [PO - PO Paid] - Checkbox indicates whether the purchase order has been completely paid.
