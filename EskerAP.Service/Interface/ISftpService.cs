@@ -9,6 +9,7 @@ namespace EskerAP.Service.Interface
 		public bool UploadFile(string localFilePath, string remoteFilePath);
 		public bool DownloadFile(string remoteFilePath, string localFilePath);
 		public bool DeleteRemoteFile(string remoteFilePath);
+		public bool RenameRemoteFile(string remoteFilePath, string newFilePath);
 
 	}
 }

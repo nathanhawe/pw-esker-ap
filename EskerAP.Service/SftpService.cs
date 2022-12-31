@@ -3,6 +3,7 @@ using Renci.SshNet;
 using Renci.SshNet.Sftp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace EskerAP.Service
@@ -69,7 +70,31 @@ namespace EskerAP.Service
 
 		public bool UploadFile(string localFilePath, string remoteFilePath)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				using var s = File.OpenRead(localFilePath);
+				_client.UploadFile(s, remoteFilePath);
+				return true;
+			}
+			catch(Exception ex)
+			{
+				_logger.LogError("An exception occurred while attempting to upload the local file '{localFilePath}' to remote file '{remoteFilePath}': {Message}", localFilePath, remoteFilePath, ex.Message);
+				return false;
+			}
+		}
+
+		public bool RenameRemoteFile(string remoteFilePath, string newFilePath)
+		{
+			try
+			{
+				_client.RenameFile(remoteFilePath, newFilePath);
+				return true;
+			}
+			catch(Exception ex) 
+			{
+				_logger.LogError("An error occurred attempting to rename the remote file '{remoteFilePath}' to '{newFilePath}': {Message}", remoteFilePath, newFilePath, ex.Message);
+				return false;
+			}
 		}
 	}
 }
