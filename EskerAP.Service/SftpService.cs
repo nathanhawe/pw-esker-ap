@@ -29,6 +29,7 @@ namespace EskerAP.Service
 
 			try
 			{
+				_logger.LogDebug("Connecting to {Username}@{Host}:{Port}.", _config.Username, _config.Host, _config.Port);
 				_client = new SftpClient(_config.Host, (_config.Port == 0 ? 22 : _config.Port), _config.Username, _config.Password);
 				_client.Connect();
 			}
@@ -41,6 +42,7 @@ namespace EskerAP.Service
 
 		public bool DeleteRemoteFile(string remoteFilePath)
 		{
+			_logger.LogDebug("Attempting to delete remote file '{remoteFilePath}'.", remoteFilePath);
 			throw new NotImplementedException();
 		}
 
@@ -52,6 +54,7 @@ namespace EskerAP.Service
 
 		public bool DownloadFile(string remoteFilePath, string localFilePath)
 		{
+			_logger.LogDebug("Attempting to download remote file '{remoteFilePath}' to '{localFilePath}'.", remoteFilePath, localFilePath);
 			throw new NotImplementedException();
 		}
 
@@ -59,6 +62,7 @@ namespace EskerAP.Service
 		{
 			try
 			{
+				_logger.LogDebug("Attempting to retrieve list of remote files at '{remoteDirectory}'.", remoteDirectory);
 				return _client.ListDirectory(remoteDirectory);
 			}
 			catch(Exception ex)
@@ -72,6 +76,7 @@ namespace EskerAP.Service
 		{
 			try
 			{
+				_logger.LogDebug("Attempting to upload file '{localFilePath}' to '{remoteFilePath}'.", localFilePath, remoteFilePath);
 				using var s = File.OpenRead(localFilePath);
 				_client.UploadFile(s, remoteFilePath);
 				return true;
@@ -87,6 +92,7 @@ namespace EskerAP.Service
 		{
 			try
 			{
+				_logger.LogDebug("Attempting to rename remote file '{remoteFilePath}' to '{newFilePath}'.", remoteFilePath, newFilePath);
 				_client.RenameFile(remoteFilePath, newFilePath);
 				return true;
 			}

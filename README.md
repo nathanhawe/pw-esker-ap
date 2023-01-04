@@ -17,6 +17,7 @@ the application secrets.  The structure of the file is:
 
 ```json
 {
+	"CompanyCode" : "PW01",
 	"Quickbase":{
 		"Realm" : "gerawan",
 		"UserToken": "..."
@@ -43,13 +44,19 @@ the application secrets.  The structure of the file is:
 			"Username" : "...",
 			"Password" : "..."
 		}
+	},
+	"Serilog": {
+		...
 	}
 }
 ```
+### Configuration
+Default serilog configuration is included in the appsettings.json file in the project. This file can be expanded to include the other configuration information.
 
 ## Secrets
 | Key | Description |
 |-----|-------------|
+| CompanyCode | The company code used in Esker e.g. "PW01" |
 | Quickbase:UserToken | User token with access to the Purchase Order Request and Approval application |
 | Quickbase:Realm | The subdomain name used to access Quickbase e.g. "gerawan" |
 | Oracle:UserId | The user id portion of the Oracle connection string e.g. "company_2_rpt". |
