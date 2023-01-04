@@ -30,8 +30,8 @@ namespace EskerAp.UnitTests
 		[TestMethod]
 		public void Export()
 		{
-			var exporter = new PaymentTermsExporter(new MockLogger<PaymentTermsExporter>(), _repo, _folderPath);
-			exporter.ExportPaymentTerms("PW01");
+			var exporter = new PaymentTermsExporter(new MockLogger<PaymentTermsExporter>(), _repo);
+			exporter.ExportPaymentTerms("PW01", _folderPath);
 
 		}
 	}

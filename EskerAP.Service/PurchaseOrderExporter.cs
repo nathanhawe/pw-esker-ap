@@ -16,25 +16,19 @@ namespace EskerAP.Service
 		private readonly Data.Famous.IPurchaseOrderDetailRepo _faDetailRepo;
 		private readonly Data.Quickbase.IPurchaseOrdersRepo _qbHeaderRepo;
 		private readonly Data.Quickbase.IItemsRepo _qbDetailRepo;
-		private readonly string _folderPath;
 
 		public PurchaseOrderExporter(
 			ILogger<PurchaseOrderExporter> logger,
 			Data.Famous.IPurchaseOrderHeaderRepo famousPOHeaderRepo,
 			Data.Famous.IPurchaseOrderDetailRepo famousPODetailRepo, 
 			Data.Quickbase.IPurchaseOrdersRepo quickbasePOHeaderRepo,
-			Data.Quickbase.IItemsRepo quickbasePODetailRepo,
-			string folderPath)
+			Data.Quickbase.IItemsRepo quickbasePODetailRepo)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_faHeaderRepo = famousPOHeaderRepo ?? throw new ArgumentNullException(nameof(famousPOHeaderRepo));
 			_faDetailRepo = famousPODetailRepo ?? throw new ArgumentNullException(nameof(famousPODetailRepo));
 			_qbHeaderRepo = quickbasePOHeaderRepo ?? throw new ArgumentException(nameof(quickbasePOHeaderRepo));
 			_qbDetailRepo = quickbasePODetailRepo ?? throw new ArgumentNullException(nameof(quickbasePODetailRepo));
-			_folderPath = folderPath ?? throw new ArgumentNullException(nameof(folderPath));
-
-			// Ensure the folder exists;
-			base.EnsureFolderExists(_folderPath);
 		}
 
 		/// <summary>
@@ -42,10 +36,13 @@ namespace EskerAP.Service
 		/// ERPs Famous and Quickbase.
 		/// </summary>
 		/// <param name="companyCode"></param>
-		public void ExportPurchaseOrders(string companyCode)
+		public void ExportPurchaseOrders(string companyCode, string folderPath)
 		{
 			List<Domain.Header> headers;
 			List<Domain.Item> details;
+
+			// Ensure the folder exists;
+			base.EnsureFolderExists(folderPath);
 
 			/* Get Headers */
 			headers = _qbHeaderRepo.Get().ToList();
@@ -90,14 +87,14 @@ namespace EskerAP.Service
 			details.ForEach(x => x.CompanyCode = companyCode);
 
 			// Export documents
-			ExportHeaders(headers);
-			ExportDetails(details);
+			ExportHeaders(headers, folderPath);
+			ExportDetails(details, folderPath);
 		}
 
-		private void ExportHeaders(List<Domain.Header> headers)
+		private void ExportHeaders(List<Domain.Header> headers, string folderPath)
 		{
-			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportHeaders() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Combined, Domain.Constants.ExportType.PurchaseorderHeaders, _folderPath);
+			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportHeaders() to folder:'{folderPath}'", folderPath);
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Combined, Domain.Constants.ExportType.PurchaseorderHeaders, folderPath);
 			try
 			{
 				// Convert to CSV document
@@ -116,10 +113,10 @@ namespace EskerAP.Service
 			}
 		}
 
-		private void ExportDetails(List<Domain.Item> details)
+		private void ExportDetails(List<Domain.Item> details, string folderPath)
 		{
-			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportDetails() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Combined, Domain.Constants.ExportType.PurchaseorderItems, _folderPath);
+			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportDetails() to folder:'{folderPath}'", folderPath);
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Combined, Domain.Constants.ExportType.PurchaseorderItems, folderPath);
 
 			try
 			{

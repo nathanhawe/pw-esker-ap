@@ -30,8 +30,8 @@ namespace EskerAp.UnitTests
 		[TestMethod]
 		public void Export()
 		{
-			var exporter = new PhaseExporter(new MockLogger<PhaseExporter>(), _repo, _folderPath);
-			exporter.ExportPhases("PW01");
+			var exporter = new PhaseExporter(new MockLogger<PhaseExporter>(), _repo);
+			exporter.ExportPhases("PW01", _folderPath);
 
 		}
 	}

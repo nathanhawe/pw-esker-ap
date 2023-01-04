@@ -12,22 +12,21 @@ namespace EskerAP.Service
 	{
 		private readonly ILogger _logger;
 		private readonly IGLAccountRepo _repo;
-		private readonly string _folderPath;
 
-		public GLAccountExporter(ILogger<GLAccountExporter> logger, IGLAccountRepo repo, string folderPath)
+		public GLAccountExporter(ILogger<GLAccountExporter> logger, IGLAccountRepo repo)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_repo = repo ?? throw new ArgumentNullException(nameof(repo));
-			_folderPath = folderPath ?? throw new ArgumentNullException(nameof(folderPath));
-
-			// Ensure the folder exists;
-			base.EnsureFolderExists(_folderPath);
 		}
 
-		public void ExportGLAccounts(string companyCode)
+		public void ExportGLAccounts(string companyCode, string folderPath)
 		{
-			_logger.LogDebug("Invoking GLAccountExporter.ExportGLAccounts() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.GLaccount, _folderPath);
+			_logger.LogDebug("Invoking GLAccountExporter.ExportGLAccounts() to folder:'{folderPath}'", folderPath);
+			
+			// Ensure the folder exists;
+			base.EnsureFolderExists(folderPath);
+
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.GLaccount, folderPath);
 
 			try
 			{

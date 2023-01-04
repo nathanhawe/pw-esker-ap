@@ -2,6 +2,6 @@
 {
 	public interface IPhaseExporter
 	{
-		public void ExportPhases(string companyCode);
+		public void ExportPhases(string companyCode, string folderPath);
 	}
 }

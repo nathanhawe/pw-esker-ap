@@ -2,6 +2,6 @@
 {
 	public interface IPaymentTermsExporter
 	{
-		public void ExportPaymentTerms(string companyCode);
+		public void ExportPaymentTerms(string companyCode, string folderPath);
 	}
 }

@@ -39,18 +39,17 @@ namespace EskerAp.UnitTests
 
 			_service = new MasterDataExportService(
 				new MockLogger<MasterDataExportService>(),
-				new CostCenterExporter(new MockLogger<CostCenterExporter>(), new CaCostCenterRepo(connectionString, schema, new MockLogger<CaCostCenterRepo>()), _folderPath),
-				new GLAccountExporter(new MockLogger<GLAccountExporter>(), new GLAccountRepo(connectionString, schema, new MockLogger<GLAccountRepo>()), _folderPath),
-				new PaymentTermsExporter(new MockLogger<PaymentTermsExporter>(), new ApPayTermsRepo(connectionString, schema, new MockLogger<ApPayTermsRepo>()), _folderPath),
-				new PhaseExporter(new MockLogger<PhaseExporter>(), new CaPhaseRepo(connectionString, schema, new MockLogger<CaPhaseRepo>()), _folderPath),
+				new CostCenterExporter(new MockLogger<CostCenterExporter>(), new CaCostCenterRepo(connectionString, schema, new MockLogger<CaCostCenterRepo>())),
+				new GLAccountExporter(new MockLogger<GLAccountExporter>(), new GLAccountRepo(connectionString, schema, new MockLogger<GLAccountRepo>())),
+				new PaymentTermsExporter(new MockLogger<PaymentTermsExporter>(), new ApPayTermsRepo(connectionString, schema, new MockLogger<ApPayTermsRepo>())),
+				new PhaseExporter(new MockLogger<PhaseExporter>(), new CaPhaseRepo(connectionString, schema, new MockLogger<CaPhaseRepo>())),
 				new PurchaseOrderExporter(
 					new MockLogger<PurchaseOrderExporter>(),
 					new PurchaseOrderHeaderRepo(connectionString, schema, new MockLogger<PurchaseOrderHeaderRepo>()),
 					new PurchaseOrderDetailRepo(connectionString, schema, new MockLogger<PurchaseOrderDetailRepo>()),
 					new PurchaseOrdersRepo(qbConnection),
-					new ItemsRepo(qbConnection),
-					_folderPath),
-				new VendorExporter(new MockLogger<VendorExporter>(), new ApVendorRepo(connectionString, schema, new MockLogger<ApVendorRepo>()), _folderPath),
+					new ItemsRepo(qbConnection)),
+				new VendorExporter(new MockLogger<VendorExporter>(), new ApVendorRepo(connectionString, schema, new MockLogger<ApVendorRepo>())),
 				new SftpService(new MockLogger<SftpService>(), sftpConfig));
 
 

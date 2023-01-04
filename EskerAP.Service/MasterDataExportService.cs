@@ -45,13 +45,13 @@ namespace EskerAP.Service
 				// Create all of the export files
 				if (!purchaseOrdersOnly)
 				{
-					_costCenterExporter.ExportCostCenters(companyCode);
-					_glAccountExporter.ExportGLAccounts(companyCode);
-					_paymentTermsExporter.ExportPaymentTerms(companyCode);
-					_phaseExporter.ExportPhases(companyCode);
-					_vendorExporter.ExportVendors(companyCode);
+					_costCenterExporter.ExportCostCenters(companyCode, localDirectory);
+					_glAccountExporter.ExportGLAccounts(companyCode, localDirectory);
+					_paymentTermsExporter.ExportPaymentTerms(companyCode, localDirectory);
+					_phaseExporter.ExportPhases(companyCode, localDirectory);
+					_vendorExporter.ExportVendors(companyCode, localDirectory);
 				}
-				_purchaseOrderExporter.ExportPurchaseOrders(companyCode);
+				_purchaseOrderExporter.ExportPurchaseOrders(companyCode, localDirectory);
 
 				// Get a list of the local files
 				var localFiles = System.IO.Directory.GetFiles(localDirectory);

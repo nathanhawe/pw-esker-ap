@@ -12,22 +12,21 @@ namespace EskerAP.Service
 	{
 		private readonly ILogger _logger;
 		private readonly IApPayTermsRepo _apPayTermsRepo;
-		private readonly string _folderPath;
 
-		public PaymentTermsExporter(ILogger<PaymentTermsExporter> logger, IApPayTermsRepo caPaymentTermsRepo, string folderPath)
+		public PaymentTermsExporter(ILogger<PaymentTermsExporter> logger, IApPayTermsRepo caPaymentTermsRepo)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_apPayTermsRepo = caPaymentTermsRepo ?? throw new ArgumentNullException(nameof(caPaymentTermsRepo));
-			_folderPath = folderPath ?? throw new ArgumentNullException(nameof(folderPath));
-
-			// Ensure the folder exists;
-			base.EnsureFolderExists(_folderPath);
 		}
 
-		public void ExportPaymentTerms(string companyCode)
+		public void ExportPaymentTerms(string companyCode, string folderPath)
 		{
-			_logger.LogDebug("Invoking PaymentTermsExporter.ExportPaymentTerms() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Paymentterms, _folderPath);
+			_logger.LogDebug("Invoking PaymentTermsExporter.ExportPaymentTerms() to folder:'{folderPath}'", folderPath);
+
+			// Ensure the folder exists;
+			base.EnsureFolderExists(folderPath);
+
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Paymentterms, folderPath);
 
 			try
 			{

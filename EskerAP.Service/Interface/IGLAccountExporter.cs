@@ -2,6 +2,6 @@
 {
 	public interface IGLAccountExporter
 	{
-		public void ExportGLAccounts(string companyCode);
+		public void ExportGLAccounts(string companyCode, string folderPath);
 	}
 }

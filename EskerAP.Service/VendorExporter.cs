@@ -12,22 +12,21 @@ namespace EskerAP.Service
 	{
 		private readonly ILogger _logger;
 		private readonly IApVendorRepo _repo;
-		private readonly string _folderPath;
 
-		public VendorExporter(ILogger<VendorExporter> logger, IApVendorRepo repo, string folderPath)
+		public VendorExporter(ILogger<VendorExporter> logger, IApVendorRepo repo)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_repo = repo ?? throw new ArgumentNullException(nameof(repo));
-			_folderPath = folderPath ?? throw new ArgumentNullException(nameof(folderPath));
-
-			// Ensure the folder exists;
-			base.EnsureFolderExists(_folderPath);
 		}
 
-		public void ExportVendors(string companyCode)
+		public void ExportVendors(string companyCode, string folderPath)
 		{
-			_logger.LogDebug("Invoking VendorExporter.ExportVendors() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Vendors, _folderPath);
+			_logger.LogDebug("Invoking VendorExporter.ExportVendors() to folder:'{folderPath}'", folderPath);
+
+			// Ensure the folder exists;
+			base.EnsureFolderExists(folderPath);
+
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Vendors, folderPath);
 
 			try
 			{

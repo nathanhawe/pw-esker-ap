@@ -2,6 +2,6 @@
 {
 	public interface IPurchaseOrderExporter
 	{
-		public void ExportPurchaseOrders(string companyCode);
+		public void ExportPurchaseOrders(string companyCode, string folderPath);
 	}
 }

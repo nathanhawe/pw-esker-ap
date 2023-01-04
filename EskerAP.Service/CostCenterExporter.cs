@@ -12,22 +12,21 @@ namespace EskerAP.Service
 	{
 		private readonly ILogger _logger;
 		private readonly ICaCostCenterRepo _caCostCenterRepo;
-		private readonly string _folderPath;
 
-		public CostCenterExporter(ILogger<CostCenterExporter> logger, ICaCostCenterRepo caCostCenterRepo, string folderPath)
+		public CostCenterExporter(ILogger<CostCenterExporter> logger, ICaCostCenterRepo caCostCenterRepo)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_caCostCenterRepo = caCostCenterRepo ?? throw new ArgumentNullException(nameof(caCostCenterRepo));
-			_folderPath = folderPath ?? throw new ArgumentNullException(nameof(folderPath));
-
-			// Ensure the folder exists;
-			base.EnsureFolderExists(_folderPath);
 		}
 
-		public void ExportCostCenters(string companyCode)
+		public void ExportCostCenters(string companyCode, string folderPath)
 		{
-			_logger.LogDebug("Invoking CostCenterExporter.ExportCostCenters() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Costcenters, _folderPath);
+			_logger.LogDebug("Invoking CostCenterExporter.ExportCostCenters() to folder:'{folderPath}'", folderPath);
+
+			// Ensure the folder exists;
+			base.EnsureFolderExists(folderPath);
+
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.Costcenters, folderPath);
 
 			try
 			{
