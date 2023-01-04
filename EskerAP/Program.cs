@@ -23,68 +23,101 @@ namespace EskerAP
 				.ReadFrom.Configuration(Configuration)
 				.CreateLogger();
 
-			string oracleConnectionString = GetOracleConnectionStringFromConfiguration();
-			string oracleSchema = Configuration["Oracle:Schema"];
-			string famousUserId = Configuration["Famous:UserId"];
-			string famousPassword = Configuration["Famous:Password"];
-			string qbRealm = Configuration["Quickbase:Realm"];
-			string qbUserToken = Configuration["Quickbase:UserToken"];
-			Service.SftpConfig sftpConfig = GetSftpConfigFromConfiguration();
+			try
+			{
 
-			using IHost host = Host
-				.CreateDefaultBuilder(args)
-				.ConfigureServices((_, services) => 
+
+				string companyCode = Configuration["CompanyCode"];
+				string localDirectory = Configuration["Esker:Folders:MasterData"];
+				string remoteDirectory = localDirectory;
+				string oracleConnectionString = GetOracleConnectionStringFromConfiguration();
+				string oracleSchema = Configuration["Oracle:Schema"];
+				string famousUserId = Configuration["Famous:UserId"];
+				string famousPassword = Configuration["Famous:Password"];
+				string qbRealm = Configuration["Quickbase:Realm"];
+				string qbUserToken = Configuration["Quickbase:UserToken"];
+				Service.SftpConfig sftpConfig = GetSftpConfigFromConfiguration();
+
+				using IHost host = Host
+					.CreateDefaultBuilder(args)
+					.ConfigureServices((_, services) =>
+					{
+						/* Famous Repos */
+						services.AddSingleton<Data.Famous.IApPayTermsRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.ApPayTermsRepo>(x, oracleConnectionString, oracleSchema));
+
+						services.AddSingleton<Data.Famous.IApVendorRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.ApVendorRepo>(x, oracleConnectionString, oracleSchema));
+
+						services.AddSingleton<Data.Famous.ICaCostCenterRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.CaCostCenterRepo>(x, oracleConnectionString, oracleSchema));
+
+						services.AddSingleton<Data.Famous.ICaPhaseRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.CaPhaseRepo>(x, oracleConnectionString, oracleSchema));
+
+						services.AddSingleton<Data.Famous.IGLAccountRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.GLAccountRepo>(x, oracleConnectionString, oracleSchema));
+
+						services.AddSingleton<Data.Famous.IImportApVouchersRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.ImportApVouchersRepo>(x, oracleConnectionString, oracleSchema, famousUserId, famousPassword));
+
+						services.AddSingleton<Data.Famous.IPurchaseOrderDetailRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.PurchaseOrderDetailRepo>(x, oracleConnectionString, oracleSchema));
+
+						services.AddSingleton<Data.Famous.IPurchaseOrderHeaderRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.PurchaseOrderHeaderRepo>(x, oracleConnectionString, oracleSchema));
+
+						/* Quickbase Repos */
+						services.AddSingleton<QuickBase.Api.IQuickBaseConnection>(x =>
+							ActivatorUtilities.CreateInstance<QuickBase.Api.QuickBaseConnection>(x, qbRealm, qbUserToken));
+
+						services.AddScoped<Data.Quickbase.IItemsRepo, Data.Quickbase.ItemsRepo>();
+						services.AddScoped<Data.Quickbase.IPurchaseOrdersRepo, Data.Quickbase.PurchaseOrdersRepo>();
+
+						/* Services */
+						services.AddScoped<Service.Interface.ICostCenterExporter, Service.CostCenterExporter>();
+						services.AddScoped<Service.Interface.IGLAccountExporter, Service.GLAccountExporter>();
+						services.AddScoped<Service.Interface.IPaymentTermsExporter, Service.PaymentTermsExporter>();
+						services.AddScoped<Service.Interface.IPhaseExporter, Service.PhaseExporter>();
+						services.AddScoped<Service.Interface.IPurchaseOrderExporter, Service.PurchaseOrderExporter>();
+						services.AddSingleton<Service.Interface.ISftpService>(x =>
+							ActivatorUtilities.CreateInstance<Service.SftpService>(x, sftpConfig));
+						services.AddScoped<Service.Interface.IVendorExporter, Service.VendorExporter>();
+						services.AddScoped<Service.Interface.IMasterDataExportService, Service.MasterDataExportService>();
+					})
+					.UseSerilog()
+					.Build();
+
+				Log.Logger.Information("Application started with {args}.", args);
+
+				if (args.Length == 1)
 				{
-					/* Famous Repos */
-					services.AddSingleton<Data.Famous.IApPayTermsRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.ApPayTermsRepo>(x, oracleConnectionString, oracleSchema));
+					switch (args[0].ToLower())
+					{
+						case "export":
+							{
+								var exporter = host.Services.GetService<Service.Interface.IMasterDataExportService>();
+								exporter.ExportMasterData(localDirectory, remoteDirectory, companyCode, false);
+								return;
+							}
+						case "export-po":
+							{
+								var exporter = host.Services.GetService<Service.Interface.IMasterDataExportService>();
+								exporter.ExportMasterData(localDirectory, remoteDirectory, companyCode, true);
+								return;
+							}
+					}
+				}
 
-					services.AddSingleton<Data.Famous.IApVendorRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.ApVendorRepo>(x, oracleConnectionString, oracleSchema));
-
-					services.AddSingleton<Data.Famous.ICaCostCenterRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.CaCostCenterRepo>(x, oracleConnectionString, oracleSchema));
-
-					services.AddSingleton<Data.Famous.ICaPhaseRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.CaPhaseRepo>(x, oracleConnectionString, oracleSchema));
-
-					services.AddSingleton<Data.Famous.IGLAccountRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.GLAccountRepo>(x, oracleConnectionString, oracleSchema));
-
-					services.AddSingleton<Data.Famous.IImportApVouchersRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.ImportApVouchersRepo>(x, oracleConnectionString, oracleSchema, famousUserId, famousPassword)); 
-					
-					services.AddSingleton<Data.Famous.IPurchaseOrderDetailRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.PurchaseOrderDetailRepo>(x, oracleConnectionString, oracleSchema));
-
-					services.AddSingleton<Data.Famous.IPurchaseOrderHeaderRepo>(x =>
-						ActivatorUtilities.CreateInstance<Data.Famous.PurchaseOrderHeaderRepo>(x, oracleConnectionString, oracleSchema));
-
-					/* Quickbase Repos */
-					services.AddSingleton<QuickBase.Api.IQuickBaseConnection>(x =>
-						ActivatorUtilities.CreateInstance<QuickBase.Api.QuickBaseConnection>(x, qbRealm, qbUserToken));
-					
-					services.AddScoped<Data.Quickbase.IItemsRepo, Data.Quickbase.ItemsRepo>();
-					services.AddScoped<Data.Quickbase.IPurchaseOrdersRepo, Data.Quickbase.PurchaseOrdersRepo>();
-
-					/* Services */
-					services.AddScoped<Service.Interface.ICostCenterExporter, Service.CostCenterExporter>();
-					services.AddScoped<Service.Interface.IGLAccountExporter, Service.GLAccountExporter>();
-					services.AddScoped<Service.Interface.IPaymentTermsExporter, Service.PaymentTermsExporter>();
-					services.AddScoped<Service.Interface.IPhaseExporter, Service.PhaseExporter>();
-					services.AddScoped<Service.Interface.IPurchaseOrderExporter, Service.PurchaseOrderExporter>();
-					services.AddSingleton<Service.Interface.ISftpService>(x => 
-						ActivatorUtilities.CreateInstance<Service.SftpService>(x, sftpConfig));
-					services.AddScoped<Service.Interface.IVendorExporter, Service.VendorExporter>();
-					services.AddScoped<Service.Interface.IMasterDataExportService, Service.MasterDataExportService>();
-				})
-				.UseSerilog()
-				.Build();
-
-
-			Log.Logger.Information("Application started.");
-
-			Console.WriteLine("Hello World!");
+				// Display help on fallthrough
+				Console.WriteLine("This program is used to integrate Esker AP with company ERP Famous/Quickbase.  The following are accepted commands:");
+				Console.WriteLine("    EXPORT - Exports all master data including purchase orders from ERP to Esker.");
+				Console.WriteLine("    EXPORT-PO - Exports only purchase orders from ERP to Esker.");
+			}
+			catch(Exception ex)
+			{
+				Log.Logger.Error("An unhandle exception was thrown: {ex}", ex);
+			}
 		}
 
 		private static Service.SftpConfig GetSftpConfigFromConfiguration()

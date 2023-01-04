@@ -19,7 +19,7 @@ the application secrets.  The structure of the file is:
 {
 	"CompanyCode" : "PW01",
 	"Quickbase":{
-		"Realm" : "gerawan",
+		"Realm" : "prima",
 		"UserToken": "..."
 	},
 	"Oracle":{
