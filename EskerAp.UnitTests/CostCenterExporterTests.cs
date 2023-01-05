@@ -30,8 +30,8 @@ namespace EskerAp.UnitTests
 		[TestMethod]
 		public void Export()
 		{
-			var exporter = new CostCenterExporter(new MockLogger<CostCenterExporter>(), _repo, _folderPath);
-			exporter.ExportCostCenters("TestCompany01");
+			var exporter = new CostCenterExporter(new MockLogger<CostCenterExporter>(), _repo);
+			exporter.ExportCostCenters("PW01", _folderPath);
 
 		}
 	}

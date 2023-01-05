@@ -129,12 +129,16 @@ namespace EskerAP.Data.Famous
 			FROM {(_hasSchema ? _schema + "." : "")}AP_VENDOR Vendor
 				LEFT JOIN {(_hasSchema ? _schema + "." : "")}FC_NAME Name ON 
 					Vendor.VENDNAMEIDX = Name.NAMEIDX
+				LEFT JOIN {(_hasSchema ? _schema + "." : "")}FC_NAME_ROLE fnr ON
+					Name.NAMEIDX = fnr.NAMEIDX 
+					AND fnr.NAMETYPE = '3'
 				LEFT JOIN {(_hasSchema ? _schema + "." : "")}FC_NAME_LOCATION NameLocation ON
 					Name.NAMEIDX = NameLocation.NAMEIDX 
 					AND NameLocation.INACTIVEFLAG = 'N'
 					AND NameLocation.NAMELOCATIONSEQ = 1
 				LEFT JOIN {(_hasSchema ? _schema + "." : "")}AP_PAY_TERMS PayTerms ON
-					Vendor.APPAYTERMSIDX = PayTerms.APPAYTERMSIDX 
+					Vendor.APPAYTERMSIDX = PayTerms.APPAYTERMSIDX
+			WHERE fnr.INACTIVEFLAG = 'N'
 			ORDER BY 
 				Name.ID";
 		}

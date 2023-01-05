@@ -16,25 +16,19 @@ namespace EskerAP.Service
 		private readonly Data.Famous.IPurchaseOrderDetailRepo _faDetailRepo;
 		private readonly Data.Quickbase.IPurchaseOrdersRepo _qbHeaderRepo;
 		private readonly Data.Quickbase.IItemsRepo _qbDetailRepo;
-		private readonly string _folderPath;
 
 		public PurchaseOrderExporter(
 			ILogger<PurchaseOrderExporter> logger,
 			Data.Famous.IPurchaseOrderHeaderRepo famousPOHeaderRepo,
 			Data.Famous.IPurchaseOrderDetailRepo famousPODetailRepo, 
 			Data.Quickbase.IPurchaseOrdersRepo quickbasePOHeaderRepo,
-			Data.Quickbase.IItemsRepo quickbasePODetailRepo,
-			string folderPath)
+			Data.Quickbase.IItemsRepo quickbasePODetailRepo)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_faHeaderRepo = famousPOHeaderRepo ?? throw new ArgumentNullException(nameof(famousPOHeaderRepo));
 			_faDetailRepo = famousPODetailRepo ?? throw new ArgumentNullException(nameof(famousPODetailRepo));
 			_qbHeaderRepo = quickbasePOHeaderRepo ?? throw new ArgumentException(nameof(quickbasePOHeaderRepo));
 			_qbDetailRepo = quickbasePODetailRepo ?? throw new ArgumentNullException(nameof(quickbasePODetailRepo));
-			_folderPath = folderPath ?? throw new ArgumentNullException(nameof(folderPath));
-
-			// Ensure the folder exists;
-			base.EnsureFolderExists(_folderPath);
 		}
 
 		/// <summary>
@@ -42,27 +36,67 @@ namespace EskerAP.Service
 		/// ERPs Famous and Quickbase.
 		/// </summary>
 		/// <param name="companyCode"></param>
-		public void ExportPurchaseOrders(string companyCode)
+		public void ExportPurchaseOrders(string companyCode, string folderPath)
 		{
-			var qbHeaders = ExportQuickbaseHeaders(companyCode);
-			ExportQuickbaseDetails(companyCode, qbHeaders);
-			ExportFamousHeaders(companyCode);
-			ExportFamousDetails(companyCode);
+			List<Domain.Header> headers;
+			List<Domain.Item> details;
+
+			// Ensure the folder exists;
+			base.EnsureFolderExists(folderPath);
+
+			/* Get Headers */
+			headers = _qbHeaderRepo.Get().ToList();
+			headers.AddRange(_faHeaderRepo.GetPurchaseOrderHeaders().ToList());
+			headers.ForEach(x => x.CompanyCode = companyCode);
+
+			/* Get Details */
+			details = _qbDetailRepo.Get().ToList();
+
+			// Add freight and tax detail from QB headers
+			var taxLines = headers.Where(x => x.Tax > 0).Select(x => new Item
+			{
+				CompanyCode = companyCode,
+				VendorNumber = x.VendorNumber,
+				OrderNumber = x.OrderNumber,
+				OrderDate = x.OrderDate,
+				ItemNumber = "t01",
+				Description = "Tax amount from QB PO header",
+				OrderedAmount = x.Tax,
+				CostType = (x.IsCapEx ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx),
+				ItemType = Domain.Constants.ItemType.AmountBased
+			}).ToList();
+
+			var freightLines = headers.Where(x => x.Freight > 0).Select(x => new Item
+			{
+				CompanyCode = companyCode,
+				VendorNumber = x.VendorNumber,
+				OrderNumber = x.OrderNumber,
+				OrderDate = x.OrderDate,
+				ItemNumber = "f01",
+				Description = "Freight amount from QB PO header",
+				OrderedAmount = x.Freight,
+				CostType = (x.IsCapEx ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx),
+				ItemType = Domain.Constants.ItemType.AmountBased
+			}).ToList();
+
+			details.AddRange(taxLines);
+			details.AddRange(freightLines);
+
+			// Add Famous details
+			details.AddRange(_faDetailRepo.GetPurchaseOrderDetails().ToList());
+			details.ForEach(x => x.CompanyCode = companyCode);
+
+			// Export documents
+			ExportHeaders(headers, folderPath);
+			ExportDetails(details, folderPath);
 		}
 
-		private List<Domain.Header> ExportQuickbaseHeaders(string companyCode)
+		private void ExportHeaders(List<Domain.Header> headers, string folderPath)
 		{
-			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportQuickbaseHeaders() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Quickbase, Domain.Constants.ExportType.PurchaseorderHeaders, _folderPath);
-			var headers = new List<Domain.Header>();
+			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportHeaders() to folder:'{folderPath}'", folderPath);
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Combined, Domain.Constants.ExportType.PurchaseorderHeaders, folderPath);
 			try
 			{
-				// Query the PO headers
-				headers = _qbHeaderRepo.Get().ToList();
-
-				// Set the company code for all headers.
-				headers.ForEach(x => x.CompanyCode = companyCode);
-
 				// Convert to CSV document
 				using var writer = new StreamWriter(filePath);
 				using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
@@ -75,56 +109,17 @@ namespace EskerAP.Service
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError("An exception was thrown while attempting to export Quickbase Purchase Order Headers: {Message}", ex.Message);
+				_logger.LogError("An exception was thrown while attempting to export Purchase Order Headers: {Message}", ex.Message);
 			}
-
-			// Return the headers so that the freight and tax can be written as line items.
-			return headers;
 		}
 
-		private void ExportQuickbaseDetails(string companyCode, List<Domain.Header> headers)
+		private void ExportDetails(List<Domain.Item> details, string folderPath)
 		{
-			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportQuickbaseDetails() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Quickbase, Domain.Constants.ExportType.PurchaseorderItems, _folderPath);
+			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportDetails() to folder:'{folderPath}'", folderPath);
+			var filePath = base.GetFilePath(Domain.Constants.Erp.Combined, Domain.Constants.ExportType.PurchaseorderItems, folderPath);
 
 			try
 			{
-				// Query the details
-				var details = _qbDetailRepo.Get().ToList();
-
-				// Add freight and tax detail from QB headers
-				var taxLines = headers.Where(x => x.Tax > 0).Select(x => new Item
-				{
-					CompanyCode = companyCode,
-					VendorNumber = x.VendorNumber,
-					OrderNumber = x.OrderNumber,
-					OrderDate = x.OrderDate,
-					ItemNumber = "t01",
-					Description = "Tax amount from QB PO header",
-					OrderedAmount = x.Tax,
-					CostType = (x.IsCapEx ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx),
-					ItemType = Domain.Constants.ItemType.AmountBased
-				}).ToList();
-
-				var freightLines = headers.Where(x => x.Freight > 0).Select(x => new Item
-				{
-					CompanyCode = companyCode,
-					VendorNumber = x.VendorNumber,
-					OrderNumber = x.OrderNumber,
-					OrderDate = x.OrderDate,
-					ItemNumber = "f01",
-					Description = "Freight amount from QB PO header",
-					OrderedAmount = x.Freight,
-					CostType = (x.IsCapEx ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx),
-					ItemType = Domain.Constants.ItemType.AmountBased
-				}).ToList();
-
-				details.AddRange(taxLines);
-				details.AddRange(freightLines);
-
-				// Set the company code for all details.
-				details.ForEach(x => x.CompanyCode = companyCode);
-
 				// Convert to CSV document
 				using var writer = new StreamWriter(filePath);
 				using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
@@ -137,65 +132,7 @@ namespace EskerAP.Service
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError("An exception was thrown while attempting to export Quickbase Purchase Order Details: {Message}", ex.Message);
-			}
-		}
-
-		private void ExportFamousHeaders(string companyCode)
-		{
-			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportFamousHeaders() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.PurchaseorderHeaders, _folderPath);
-
-			try
-			{
-				// Query the PO headers
-				var headers = _faHeaderRepo.GetPurchaseOrderHeaders().ToList();
-
-				// Set the company code for all headers.
-				headers.ForEach(x => x.CompanyCode = companyCode);
-
-				// Convert to CSV document
-				using var writer = new StreamWriter(filePath);
-				using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-				csv.Context.TypeConverterCache.AddConverter<bool>(new Infrastructure.TypeConverter.EskerBooleanConverter());
-				csv.Context.TypeConverterCache.AddConverter<DateTime>(new Infrastructure.TypeConverter.EskerDateConverter());
-				csv.Context.RegisterClassMap<Infrastructure.Maps.PurchaseOrderHeaderMap>();
-
-				// Write document to disk
-				csv.WriteRecords(headers);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError("An exception was thrown while attempting to export Famous Purchase Order Headers: {Message}", ex.Message);
-			}
-		}
-
-		private void ExportFamousDetails(string companyCode)
-		{
-			_logger.LogDebug("Invoking PurchaseOrderExporter.ExportFamousDetails() to folder:'{FolderPath}'", _folderPath);
-			var filePath = base.GetFilePath(Domain.Constants.Erp.Famous, Domain.Constants.ExportType.PurchaseorderItems, _folderPath);
-
-			try
-			{
-				// Query the details
-				var details = _faDetailRepo.GetPurchaseOrderDetails().ToList();
-
-				// Set the company code for all details.
-				details.ForEach(x => x.CompanyCode = companyCode);
-
-				// Convert to CSV document
-				using var writer = new StreamWriter(filePath);
-				using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-				csv.Context.TypeConverterCache.AddConverter<bool>(new Infrastructure.TypeConverter.EskerBooleanConverter());
-				csv.Context.TypeConverterCache.AddConverter<DateTime>(new Infrastructure.TypeConverter.EskerDateConverter());
-				csv.Context.RegisterClassMap<Infrastructure.Maps.PurchaseOrderDetailMap>();
-
-				// Write document to disk
-				csv.WriteRecords(details);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError("An exception was thrown while attempting to export Famous Purchase Order Details: {Message}", ex.Message);
+				_logger.LogError("An exception was thrown while attempting to export Purchase Order Details: {Message}", ex.Message);
 			}
 		}
 	}

@@ -6,11 +6,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EskerAp.UnitTests
 {
 	[TestClass]
-	public class VendorExporterTests
+	public class PhaseExporterTests
 	{
 
 		private IConfigurationRoot _configuration;
-		private ApVendorRepo _repo;
+		private CaPhaseRepo _repo;
 		private string _folderPath;
 
 		[TestInitialize]
@@ -24,14 +24,14 @@ namespace EskerAp.UnitTests
 			var connectionString = $"User id={userId};Password={password};Data Source={dataSource}";
 			_folderPath = _configuration["Esker:Folders:MasterData"];
 
-			_repo = new ApVendorRepo(connectionString, schema, new MockLogger<ApVendorRepo>());
+			_repo = new CaPhaseRepo(connectionString, schema, new MockLogger<CaPhaseRepo>());
 		}
 
 		[TestMethod]
 		public void Export()
 		{
-			var exporter = new VendorExporter(new MockLogger<VendorExporter>(), _repo);
-			exporter.ExportVendors("PW01", _folderPath);
+			var exporter = new PhaseExporter(new MockLogger<PhaseExporter>(), _repo);
+			exporter.ExportPhases("PW01", _folderPath);
 
 		}
 	}

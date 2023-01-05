@@ -22,7 +22,7 @@ namespace EskerAP.Data.Quickbase
 		{
 			var clist = GetClist();
 			var slist = $"{(int)PurchaseOrdersField.RecordId}";
-			var query = $"{{{(int)PurchaseOrdersField.POPaid}.{ComparisonOperator.EX}.'0'}}AND{{{(int)PurchaseOrdersField.DateCreated}.{ComparisonOperator.OAF}.'01-01-2021'}}";
+			var query = $"{{{(int)PurchaseOrdersField.POPaid}.{ComparisonOperator.EX}.'0'}}AND{{{(int)PurchaseOrdersField.DateCreated}.{ComparisonOperator.OAF}.'01-01-2021'}}AND{{{(int)PurchaseOrdersField.PORejected}.{ComparisonOperator.EX}.'0'}}";
 
 			return base.Get(TableId.PurchaseOrders, query, clist, slist, ConvertToPurchaseOrder);
 		}
@@ -30,7 +30,7 @@ namespace EskerAP.Data.Quickbase
 		private string GetClist()
 		{
 			var clist = $"{(int)PurchaseOrdersField.VendorId}.";
-			clist += $"{(int)PurchaseOrdersField.PONo}.";
+			clist += $"{(int)PurchaseOrdersField.PONumber}.";
 			clist += $"{(int)PurchaseOrdersField.Date}.";
 			clist += $"{(int)PurchaseOrdersField.Total}.";
 			clist += $"{(int)PurchaseOrdersField.TotalAmountReceived}.";
@@ -70,7 +70,7 @@ namespace EskerAP.Data.Quickbase
 					switch (fieldId)
 					{
 						case (int)PurchaseOrdersField.VendorId: temp.VendorNumber = field.Value?.ToUpper()?.Trim() ?? String.Empty; break;
-						case (int)PurchaseOrdersField.PONo: temp.OrderNumber = "Q" + field.Value?.ToUpper()?.Trim() ?? String.Empty; break;
+						case (int)PurchaseOrdersField.PONumber: temp.OrderNumber = field.Value?.ToUpper()?.Trim() ?? String.Empty; break;
 						case (int)PurchaseOrdersField.Date: temp.OrderDate = ParseDate(field.Value); break;
 						case (int)PurchaseOrdersField.Total: temp.OrderedAmount = ParseDecimal(field.Value) ?? 0; break;
 						case (int)PurchaseOrdersField.TotalAmountReceived: temp.DeliveredAmount = ParseDecimal(field.Value) ?? 0; break;

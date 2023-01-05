@@ -2,6 +2,6 @@
 {
 	public interface IVendorExporter
 	{
-		public void ExportVendors(string companyCode);
+		public void ExportVendors(string companyCode, string folderPath);
 	}
 }

@@ -68,6 +68,27 @@ namespace EskerAP.Domain
 		public string CostCenter { get; set; }
 
 		/// <summary>
+		/// Project code's unique ID.
+		/// </summary>
+		public string ProjectCode { get; set; }
+
+		/// <summary>
+		/// Identifier representing the internal order used to manage costs and activities in the company.
+		/// Only used when the Accounts Payable module is integrated with SAP.
+		/// </summary>
+		public string InternalOrder { get; set; }
+
+		/// <summary>
+		/// Name of the Work Breakdown Structure. Only used when the Accounts Payable module is integrated with SAP.
+		/// </summary>
+		public string WBSElement { get; set; }
+
+		/// <summary>
+		/// Code representing the Work Breakdown Structure. Only used when the Accounts Payable module is integrated with SAP.
+		/// </summary>
+		public string WBSElementID { get; set; }
+
+		/// <summary>
 		/// Name of the optional custom dimension.
 		/// </summary>
 		public string FreeDimension1 { get; set; }
@@ -160,7 +181,7 @@ namespace EskerAP.Domain
 		/// Indicates whether the invoice reconcilliation should be based on goods and services receipt 
 		/// or on purchase order.  If selected, the reconcilliation is based on goods and services receipt. 
 		/// </summary>
-		public bool Griv { get; set; } = true;
+		public bool Griv { get; set; } = false;
 
 		/// <summary>
 		/// Indicates whether an invoice is expected for the PO line item or not.

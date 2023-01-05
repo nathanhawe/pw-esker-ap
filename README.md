@@ -17,8 +17,9 @@ the application secrets.  The structure of the file is:
 
 ```json
 {
+	"CompanyCode" : "PW01",
 	"Quickbase":{
-		"Realm" : "gerawan",
+		"Realm" : "prima",
 		"UserToken": "..."
 	},
 	"Oracle":{
@@ -36,14 +37,26 @@ the application secrets.  The structure of the file is:
 			"MasterData" : "...",
 			"Invoices" : "...",
 			"Ack" : "..."
+		},
+		"SFTP": {
+			"Host" : "...",
+			"Port" : 22,
+			"Username" : "...",
+			"Password" : "..."
 		}
+	},
+	"Serilog": {
+		...
 	}
 }
 ```
+### Configuration
+Default serilog configuration is included in the appsettings.json file in the project. This file can be expanded to include the other configuration information.
 
 ## Secrets
 | Key | Description |
 |-----|-------------|
+| CompanyCode | The company code used in Esker e.g. "PW01" |
 | Quickbase:UserToken | User token with access to the Purchase Order Request and Approval application |
 | Quickbase:Realm | The subdomain name used to access Quickbase e.g. "gerawan" |
 | Oracle:UserId | The user id portion of the Oracle connection string e.g. "company_2_rpt". |
@@ -55,3 +68,7 @@ the application secrets.  The structure of the file is:
 | Esker:Folders:MasterData | The folder used to export ERP data to Esker e.g. "In_MasterData" |
 | Esker:Folders:Invoices | The folder used to import invoice XML files from Esker e.g. "Out" |
 | Esker:Folders:Ack | The folder used to export ERP acknowledgement files e.g. "ErpAck" |
+| Esker:SFTP:Host | The SFTP host name |
+| Esker:SFTP:Port | The SFTP port number |
+| Esker:SFTP:Username | The SFTP username |
+| Esker:SFTP:Password | The SFTP password |

@@ -48,9 +48,9 @@
 		TotalQuantityReceived = 19,
 
 		/// <summary>
-		/// [PO No.] - String indicates the the purchase order number the item belongs to.
+		/// [PO No.] - Numeric indicates the the purchase order number the item belongs to.
 		/// </summary>
-		PONumber = 23,
+		PONumber = 61,
 
 		/// <summary>
 		/// [PO - PO Paid] - Checkbox indicates whether the purchase order has been completely paid.
@@ -66,5 +66,10 @@
 		/// [PO - Is this Purchase Related to a CapEx?] - String where "Yes" indicates that the purchase order is CapEx.
 		/// </summary>
 		IsCapEx = 58,
+
+		/// <summary>
+		/// [PO - PO Rejected] - Checkbox indicates that the purchase order was rejected during the approval phase.
+		/// </summary>
+		PORejected = 60,
 	}
 }

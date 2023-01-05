@@ -10,7 +10,7 @@ namespace EskerAP.Infrastructure.TypeConverter
         {
             if (value == null) return "";
 
-            return (bool)value ? "yes" : "no";
+            return (bool)value ? "Yes" : "No";
         }
     }
 }

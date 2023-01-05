@@ -50,10 +50,9 @@ namespace EskerAp.UnitTests
 				_famousHeaderRepo,
 				_famousDetailRepo,
 				_quickbaseHeaderRepo,
-				_quickbaseDetailRepo,
-				_folderPath);
+				_quickbaseDetailRepo);
 
-			exporter.ExportPurchaseOrders("TestCompany01");
+			exporter.ExportPurchaseOrders("PW01", _folderPath);
 
 		}
 	}
