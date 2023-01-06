@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Renci.SshNet;
+using Renci.SshNet.Common;
 using Renci.SshNet.Sftp;
 using System;
 using System.Collections.Generic;
@@ -54,8 +55,19 @@ namespace EskerAP.Service
 
 		public bool DownloadFile(string remoteFilePath, string localFilePath)
 		{
-			_logger.LogDebug("Attempting to download remote file '{remoteFilePath}' to '{localFilePath}'.", remoteFilePath, localFilePath);
-			throw new NotImplementedException();
+			try 
+			{
+				_logger.LogDebug("Attempting to download remote file '{remoteFilePath}' to '{localFilePath}'.", remoteFilePath, localFilePath);
+				using var s = File.OpenWrite(localFilePath);
+				_client.DownloadFile(remoteFilePath, s);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError("An error occurred while attempting to download '{remoteFilePath}' to '{localFilePath}. {Message}", remoteFilePath, localFilePath, ex.Message);
+				return false;
+
+			}
 		}
 
 		public IEnumerable<SftpFile> ListAllFiles(string remoteDirectory = ".")

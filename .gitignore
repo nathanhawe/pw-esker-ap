@@ -339,3 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 *.rsa
+/EskerAP/Properties/launchSettings.json
