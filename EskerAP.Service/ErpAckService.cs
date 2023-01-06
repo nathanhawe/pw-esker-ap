@@ -30,10 +30,10 @@ namespace EskerAP.Service
 			if (importApVoucherResponse.Exception != null) message += importApVoucherResponse.Exception.Message;
 
 			// Header
-			if (importApVoucherResponse.HeaderErrors != null) message += $"Header: {importApVoucherResponse.HeaderErrors}";
+			if (!string.IsNullOrWhiteSpace(importApVoucherResponse.HeaderErrors)) message += $"Header: {importApVoucherResponse.HeaderErrors}";
 
 			// Other
-			if (importApVoucherResponse.OtherErrors != null) message += $"Other: {importApVoucherResponse.OtherErrors}";
+			if (!string.IsNullOrWhiteSpace(importApVoucherResponse.OtherErrors)) message += $"Other: {importApVoucherResponse.OtherErrors}";
 
 			// Line
 			if (importApVoucherResponse.LineErrors.Count > 0) message += "Lines: ";
