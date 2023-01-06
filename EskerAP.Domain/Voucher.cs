@@ -6,6 +6,7 @@ namespace EskerAP.Domain
 {
 	public class Voucher
 	{
+		public string Ruid { get; set; }
 		public string VendorId { get; set; }
 		public string InvoiceNumber { get; set; }
 		public char HoldFlag { get; set; } = 'N';
