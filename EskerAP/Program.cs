@@ -28,8 +28,9 @@ namespace EskerAP
 
 
 				string companyCode = Configuration["CompanyCode"];
-				string localDirectory = Configuration["Esker:Folders:MasterData"];
-				string remoteDirectory = localDirectory;
+				string masterDataDir = Configuration["Esker:Folders:MasterData"];
+				string ackDir = Configuration["Esker:Folders:Ack"];
+				string invoiceDir = Configuration["Esker:Folders:Invoices"];
 				string oracleConnectionString = GetOracleConnectionStringFromConfiguration();
 				string oracleSchema = Configuration["Oracle:Schema"];
 				string famousUserId = Configuration["Famous:UserId"];
@@ -76,6 +77,7 @@ namespace EskerAP
 
 						/* Services */
 						services.AddScoped<Service.Interface.ICostCenterExporter, Service.CostCenterExporter>();
+						services.AddScoped<Service.Interface.IErpAckService, Service.ErpAckService>();
 						services.AddScoped<Service.Interface.IGLAccountExporter, Service.GLAccountExporter>();
 						services.AddScoped<Service.Interface.IPaymentTermsExporter, Service.PaymentTermsExporter>();
 						services.AddScoped<Service.Interface.IPhaseExporter, Service.PhaseExporter>();
@@ -83,7 +85,9 @@ namespace EskerAP
 						services.AddSingleton<Service.Interface.ISftpService>(x =>
 							ActivatorUtilities.CreateInstance<Service.SftpService>(x, sftpConfig));
 						services.AddScoped<Service.Interface.IVendorExporter, Service.VendorExporter>();
+						services.AddScoped<Service.Interface.IVoucherConverter, Service.VoucherConverter>();
 						services.AddScoped<Service.Interface.IMasterDataExportService, Service.MasterDataExportService>();
+						services.AddScoped<Service.Interface.IVoucherImportService, Service.VoucherImportService>();
 					})
 					.UseSerilog()
 					.Build();
@@ -97,13 +101,19 @@ namespace EskerAP
 						case "export":
 							{
 								var exporter = host.Services.GetService<Service.Interface.IMasterDataExportService>();
-								exporter.ExportMasterData(localDirectory, remoteDirectory, companyCode, false);
+								exporter.ExportMasterData(masterDataDir, masterDataDir, companyCode, false);
 								return;
 							}
 						case "export-po":
 							{
 								var exporter = host.Services.GetService<Service.Interface.IMasterDataExportService>();
-								exporter.ExportMasterData(localDirectory, remoteDirectory, companyCode, true);
+								exporter.ExportMasterData(masterDataDir, masterDataDir, companyCode, true);
+								return;
+							}
+						case "import":
+							{
+								var importer = host.Services.GetService<Service.Interface.IVoucherImportService>();
+								importer.ImportVouchers(invoiceDir, invoiceDir, ackDir);
 								return;
 							}
 					}
@@ -113,6 +123,7 @@ namespace EskerAP
 				Console.WriteLine("This program is used to integrate Esker AP with company ERP Famous/Quickbase.  The following are accepted commands:");
 				Console.WriteLine("    EXPORT - Exports all master data including purchase orders from ERP to Esker.");
 				Console.WriteLine("    EXPORT-PO - Exports only purchase orders from ERP to Esker.");
+				Console.WriteLine("    IMPORT - Imports all pending vouchers from Esker into ERP.");
 			}
 			catch(Exception ex)
 			{
