@@ -39,8 +39,9 @@ namespace Famous.IntegrationTests
 			{
 				VendorId = "TEST",
 				InvoiceNumber = "TEST012345678910", // Will be truncated to TEST01234567
-				InvoiceDate = new DateTime(2021,9,20),
+				InvoiceDate = new DateTime(2022,10,20),
 				PayTerms = "PAYMENT",
+				AllowDuplicateVendorInvoice = 'Y',
 			};
 			testVoucher.Lines.Add(new VoucherItem
 			{
@@ -140,6 +141,7 @@ namespace Famous.IntegrationTests
 		private void Print(ImportApVoucherResponse response)
 		{
 			Console.WriteLine($"ImportWasSuccessful: '{response.ImportWasSuccessful}'");
+			Console.WriteLine($"EntryNumber: '{response.EntryNumber}'");
 			Console.WriteLine($"SucceededCount: '{response.SucceededCount}'");
 			Console.WriteLine($"FailedCount: '{response.Failedcount}'");
 			Console.WriteLine($"SkippedCount: '{response.SkippedCount}'");
