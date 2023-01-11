@@ -18,6 +18,7 @@ the application secrets.  The structure of the file is:
 ```json
 {
 	"CompanyCode" : "PW01",
+	"PaidInvoiceDaysPast" : "10",
 	"Quickbase":{
 		"Realm" : "prima",
 		"UserToken": "..."
@@ -58,6 +59,7 @@ Default serilog configuration is included in the appsettings.json file in the pr
 | Key | Description |
 |-----|-------------|
 | CompanyCode | The company code used in Esker e.g. "PW01" |
+| PaidInvoiceDaysPast | The number of days in the past to search for paid invoices e.g. 10 |
 | Quickbase:UserToken | User token with access to the Purchase Order Request and Approval application |
 | Quickbase:Realm | The subdomain name used to access Quickbase e.g. "gerawan" |
 | Oracle:UserId | The user id portion of the Oracle connection string e.g. "company_2_rpt". |
