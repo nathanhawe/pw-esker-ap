@@ -40,6 +40,8 @@ namespace EskerAP.Service
 				// Convert to CSV document
 				using var writer = new StreamWriter(filePath);
 				using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+				csv.Context.TypeConverterCache.AddConverter<DateTime>(new Infrastructure.TypeConverter.EskerDateConverter());
+				csv.Context.TypeConverterCache.AddConverter<bool>(new Infrastructure.TypeConverter.EskerBooleanConverter());
 				csv.Context.RegisterClassMap<Infrastructure.Maps.PaidInvoiceMap>();
 
 				// Write document to disk
