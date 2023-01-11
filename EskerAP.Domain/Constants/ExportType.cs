@@ -14,5 +14,6 @@
 		Vendors = 10,
 		Paymentterms = 11,
 		Phases = 12,
+		PaidInvoices = 13,
 	}
 }

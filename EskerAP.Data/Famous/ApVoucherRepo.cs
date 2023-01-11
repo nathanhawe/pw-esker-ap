@@ -24,7 +24,7 @@ namespace EskerAP.Data.Famous
 
 		public IEnumerable<Domain.PaidInvoice> GetPaidInvoices(int daysPast)
 		{
-			_logger.LogDebug("GetPaidInvoices() Invoked with current {_daysPast}");
+			_logger.LogDebug("GetPaidInvoices() Invoked with current {daysPast}", daysPast);
 
 			var paidInvoices = new List<PaidInvoice>();
 			using OracleConnection con = new OracleConnection(_connectionString);
