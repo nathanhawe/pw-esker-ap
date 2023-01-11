@@ -72,6 +72,7 @@ namespace EskerAP.Service
 					{
 						CostCenterId = costCenter?.InnerText,
 						GlAccountCode = glAccount?.InnerText,
+						DepartmentId = string.IsNullOrWhiteSpace(glAccount?.InnerText) ? "" : "01",
 						LineDescription = description?.InnerText,
 						Quantity = 1,
 						Rate = Decimal.TryParse(amount?.InnerText, out decimal rDec) ? rDec : 0,
