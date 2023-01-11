@@ -31,6 +31,8 @@ namespace EskerAP
 				string masterDataDir = Configuration["Esker:Folders:MasterData"];
 				string ackDir = Configuration["Esker:Folders:Ack"];
 				string invoiceDir = Configuration["Esker:Folders:Invoices"];
+				string paidInvoiceDir = Configuration["Esker:Folders:PaidInvoices"];
+				int paidInvoiceDaysPast = (int.TryParse(Configuration["PaidInvoiceDaysPast"], out int days) ? days : 10);
 				string oracleConnectionString = GetOracleConnectionStringFromConfiguration();
 				string oracleSchema = Configuration["Oracle:Schema"];
 				string famousUserId = Configuration["Famous:UserId"];
@@ -50,6 +52,9 @@ namespace EskerAP
 						services.AddSingleton<Data.Famous.IApVendorRepo>(x =>
 							ActivatorUtilities.CreateInstance<Data.Famous.ApVendorRepo>(x, oracleConnectionString, oracleSchema));
 
+						services.AddSingleton<Data.Famous.IApVoucherRepo>(x =>
+							ActivatorUtilities.CreateInstance<Data.Famous.ApVoucherRepo>(x, oracleConnectionString, oracleSchema)); 
+						
 						services.AddSingleton<Data.Famous.ICaCostCenterRepo>(x =>
 							ActivatorUtilities.CreateInstance<Data.Famous.CaCostCenterRepo>(x, oracleConnectionString, oracleSchema));
 
@@ -80,6 +85,7 @@ namespace EskerAP
 						services.AddScoped<Service.Interface.IErpAckService, Service.ErpAckService>();
 						services.AddScoped<Service.Interface.IGLAccountExporter, Service.GLAccountExporter>();
 						services.AddScoped<Service.Interface.IPaymentTermsExporter, Service.PaymentTermsExporter>();
+						services.AddScoped<Service.Interface.IPaidInvoiceExporter, Service.PaidInvoiceExporter>();
 						services.AddScoped<Service.Interface.IPhaseExporter, Service.PhaseExporter>();
 						services.AddScoped<Service.Interface.IPurchaseOrderExporter, Service.PurchaseOrderExporter>();
 						services.AddSingleton<Service.Interface.ISftpService>(x =>
@@ -88,6 +94,7 @@ namespace EskerAP
 						services.AddScoped<Service.Interface.IVoucherConverter, Service.VoucherConverter>();
 						services.AddScoped<Service.Interface.IMasterDataExportService, Service.MasterDataExportService>();
 						services.AddScoped<Service.Interface.IVoucherImportService, Service.VoucherImportService>();
+						services.AddScoped<Service.Interface.IVoucherExportService, Service.VoucherExportService>();
 					})
 					.UseSerilog()
 					.Build();
@@ -110,6 +117,12 @@ namespace EskerAP
 								exporter.ExportMasterData(masterDataDir, masterDataDir, companyCode, true);
 								return;
 							}
+						case "paid-invoice":
+							{
+								var exporter = host.Services.GetService<Service.Interface.IVoucherExportService>();
+								exporter.ExportPaidInvoices(paidInvoiceDir, paidInvoiceDir, companyCode, paidInvoiceDaysPast);
+								return;
+							}
 						case "import":
 							{
 								var importer = host.Services.GetService<Service.Interface.IVoucherImportService>();
@@ -123,6 +136,7 @@ namespace EskerAP
 				Console.WriteLine("This program is used to integrate Esker AP with company ERP Famous/Quickbase.  The following are accepted commands:");
 				Console.WriteLine("    EXPORT - Exports all master data including purchase orders from ERP to Esker.");
 				Console.WriteLine("    EXPORT-PO - Exports only purchase orders from ERP to Esker.");
+				Console.WriteLine("    PAID-INVOICE - Exports paid invoices.");
 				Console.WriteLine("    IMPORT - Imports all pending vouchers from Esker into ERP.");
 			}
 			catch(Exception ex)

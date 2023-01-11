@@ -18,6 +18,7 @@ the application secrets.  The structure of the file is:
 ```json
 {
 	"CompanyCode" : "PW01",
+	"PaidInvoiceDaysPast" : "10",
 	"Quickbase":{
 		"Realm" : "prima",
 		"UserToken": "..."
@@ -36,7 +37,8 @@ the application secrets.  The structure of the file is:
 		"Folders": {
 			"MasterData" : "...",
 			"Invoices" : "...",
-			"Ack" : "..."
+			"Ack" : "...",
+			"PaidInvoices" : "..."
 		},
 		"SFTP": {
 			"Host" : "...",
@@ -57,6 +59,7 @@ Default serilog configuration is included in the appsettings.json file in the pr
 | Key | Description |
 |-----|-------------|
 | CompanyCode | The company code used in Esker e.g. "PW01" |
+| PaidInvoiceDaysPast | The number of days in the past to search for paid invoices e.g. 10 |
 | Quickbase:UserToken | User token with access to the Purchase Order Request and Approval application |
 | Quickbase:Realm | The subdomain name used to access Quickbase e.g. "gerawan" |
 | Oracle:UserId | The user id portion of the Oracle connection string e.g. "company_2_rpt". |
@@ -68,6 +71,7 @@ Default serilog configuration is included in the appsettings.json file in the pr
 | Esker:Folders:MasterData | The folder used to export ERP data to Esker e.g. "In_MasterData" |
 | Esker:Folders:Invoices | The folder used to import invoice XML files from Esker e.g. "Out" |
 | Esker:Folders:Ack | The folder used to export ERP acknowledgement files e.g. "ErpAck" |
+| Esker:Folders:PaidInvoices | The folder used to export a CSV of invoice payments to Esker e.g. "In_PaidInvoices" |
 | Esker:SFTP:Host | The SFTP host name |
 | Esker:SFTP:Port | The SFTP port number |
 | Esker:SFTP:Username | The SFTP username |
