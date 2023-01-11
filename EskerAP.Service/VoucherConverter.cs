@@ -19,7 +19,8 @@ namespace EskerAP.Service
 		Description,
 		Quantity,
 		Amount,
-		Z_Phase
+		Z_Phase,
+		OrderNumber,
 	}
 
 	public class VoucherConverter : Interface.IVoucherConverter
@@ -46,6 +47,7 @@ namespace EskerAP.Service
 				var invoiceDate = doc.GetElementsByTagName($"{InvoiceElement.InvoiceDate}")[0];
 				var paymentTerms = doc.GetElementsByTagName($"{InvoiceElement.PaymentTerms}")[0];
 				var dueDate = doc.GetElementsByTagName($"{InvoiceElement.DueDate}")[0];
+				var poSourceNo = doc.GetElementsByTagName($"{InvoiceElement.OrderNumber}")[0];
 				var lineItems = doc.GetElementsByTagName($"{InvoiceElement.LineItems}")[0].ChildNodes;
 
 				voucher.Ruid = invoice.Attributes["RUID"].Value;
@@ -54,6 +56,7 @@ namespace EskerAP.Service
 				voucher.InvoiceDate = DateTime.TryParse(invoiceDate?.InnerText, out DateTime iDate) ? iDate : DateTime.MinValue;
 				voucher.PayTerms = paymentTerms?.InnerText;
 				voucher.DueDate = DateTime.TryParse(dueDate?.InnerText, out DateTime dDate) ? dDate : DateTime.MinValue;
+				voucher.PoSourceNumber = poSourceNo?.InnerText;
 
 				XmlNode costCenter, glAccount, description, amount, line, phase;
 				
