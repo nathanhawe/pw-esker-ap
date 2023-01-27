@@ -31,7 +31,17 @@ namespace Famous.IntegrationTests
 		[TestMethod]
 		public void GetPaidInvoices()
 		{
-			var temp = _repo.GetPaidInvoices(90);
+			var temp = _repo.GetPaidInvoices(120);
+			Print(temp);
+		}
+
+		[TestMethod]
+		public void GetPaidInvoice()
+		{
+			var vendorNumber = "CALRUB";
+			var invoiceNumber = "F-075877";
+
+			var temp = _repo.GetPaidInvoice(vendorNumber, invoiceNumber);
 			Print(temp);
 		}
 
@@ -46,11 +56,20 @@ namespace Famous.IntegrationTests
 
 		private void Print(PaidInvoice line)
 		{
-			Console.WriteLine("");
-			var properties = typeof(PaidInvoice).GetProperties();
-			foreach (var property in properties)
+			if (line != null)
 			{
-				Console.Write($"     {property.Name}: '{property.GetValue(line)}'");
+
+
+				Console.WriteLine("");
+				var properties = typeof(PaidInvoice).GetProperties();
+				foreach (var property in properties)
+				{
+					Console.Write($"     {property.Name}: '{property.GetValue(line)}'");
+				}
+			}
+			else
+			{
+				Console.WriteLine("No record returned.");
 			}
 		}
 	}

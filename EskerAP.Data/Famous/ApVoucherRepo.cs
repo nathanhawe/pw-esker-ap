@@ -22,6 +22,43 @@ namespace EskerAP.Data.Famous
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
+		public PaidInvoice GetPaidInvoice(string vendorNumber, string invoiceNumber)
+		{
+			_logger.LogDebug("GetPaidInvoice() Invoked with '{vendorNumber}' and '{invoiceNumber}'", vendorNumber, invoiceNumber);
+
+			PaidInvoice paidInvoice = null;
+			using OracleConnection con = new OracleConnection(_connectionString);
+			using OracleCommand cmd = con.CreateCommand();
+			try
+			{
+				con.Open();
+				cmd.BindByName = true;
+				cmd.CommandText = GetQuery();
+				cmd.Parameters.Add(":1", OracleDbType.Varchar2, vendorNumber, System.Data.ParameterDirection.Input);
+				cmd.Parameters.Add(":2", OracleDbType.Varchar2, invoiceNumber, System.Data.ParameterDirection.Input);
+				OracleDataReader reader = cmd.ExecuteReader();
+
+				if(reader.Read()) 
+				{
+					paidInvoice = new PaidInvoice
+					{
+						VendorNumber = reader.IsDBNull(0) ? "" : reader.GetString(0),
+						InvoiceNumber = reader.IsDBNull(1) ? "" : reader.GetString(1),
+						PaymentDate = reader.IsDBNull(2) ? DateTime.Now : reader.GetDateTime(2),
+						PaymentMethod = GetEskerPaymentMethod(reader.IsDBNull(3) ? "" : reader.GetString(3)),
+						PaymentReference = reader.IsDBNull(4) ? "" : reader.GetString(4),
+					};
+				}
+				reader.Dispose();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError("An exception occured while attempting to get a Paid Invoice from Famous: {Message}.", ex.Message);
+			}
+
+			return paidInvoice;
+		}
+
 		public IEnumerable<Domain.PaidInvoice> GetPaidInvoices(int daysPast)
 		{
 			_logger.LogDebug("GetPaidInvoices() Invoked with current {daysPast}", daysPast);
@@ -91,6 +128,27 @@ namespace EskerAP.Data.Famous
 				AND hdr.VENDINVCNO IS NOT NULL
 				AND apr.PAYDATE >= SYSDATE - {daysPast}
 			ORDER BY apr.PAYMENTTYPE  DESC";
+		}
+
+		private string GetQuery()
+		{
+			return $@"SELECT
+				-- COMPANY CODE
+				 fn.ID AS VENDORNUMBER
+				,hdr.VENDINVCNO AS INVOICENUMBER
+				,apr.PAYDATE AS PAYMENTDATE
+				,apr.PAYMENTTYPE 
+				,apr.CHECKNO 
+			FROM {(_hasSchema ? _schema + "." : "")}AP_VOUCHER_HEADER hdr
+				LEFT JOIN {(_hasSchema ? _schema + "." : "")}FC_NAME fn ON
+					hdr.VENDNAMEIDX = fn.NAMEIDX 
+				LEFT JOIN {(_hasSchema ? _schema + "." : "")}AP_PAID_RUN apr ON
+					hdr.APRUNIDX = apr.APRUNIDX 
+			WHERE 
+				hdr.APSTATUS = '4' 
+				AND fn.ID = :1
+				AND hdr.VENDINVCNO = :2
+			ORDER BY apr.PAYDATE  DESC";
 		}
 	}
 }

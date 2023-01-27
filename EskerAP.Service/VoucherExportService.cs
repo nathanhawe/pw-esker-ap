@@ -19,16 +19,16 @@ namespace EskerAP.Service
 			_sftpService = sftpService ?? throw new ArgumentNullException(nameof(sftpService));
 		}
 
-		public void ExportPaidInvoices(string localDirectory, string remoteDirectory, string companyCode, int daysPast)
+		public void ExportPaidInvoices(string paidInvoiceLocalDirectory, string paidInvoiceRemoteDirectory, string unpaidInvoiceRemoteDirectory, string companyCode)
 		{
-			_logger.LogDebug("Invoked ExportPaidInvoices() with '{localDirectory}', '{remoteDirectory}', '{companyCode}', and '{daysPast}'.", localDirectory, remoteDirectory, companyCode, daysPast);
+			_logger.LogDebug("Invoked ExportPaidInvoices() with '{paidInvoiceLocalDirectory}', '{paidInvoiceRemoteDirectory}', '{unpaidInvoiceRemoteDirectory}', and '{companyCode}'.", paidInvoiceLocalDirectory, paidInvoiceRemoteDirectory, unpaidInvoiceRemoteDirectory, companyCode);
 			try
 			{
 				// Create the export file.
-				_paidInvoiceExporter.ExportPaidInvoices(companyCode, localDirectory, daysPast);
+				_paidInvoiceExporter.ExportPaidInvoices(companyCode, paidInvoiceLocalDirectory, unpaidInvoiceRemoteDirectory);
 				
 				// Get a list of the local files
-				var localFiles = System.IO.Directory.GetFiles(localDirectory);
+				var localFiles = System.IO.Directory.GetFiles(paidInvoiceLocalDirectory);
 
 				// Transfer the files to the SFTP server
 				string remoteFilePath;

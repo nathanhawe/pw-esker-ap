@@ -32,6 +32,7 @@ namespace EskerAP
 				string ackDir = Configuration["Esker:Folders:Ack"];
 				string invoiceDir = Configuration["Esker:Folders:Invoices"];
 				string paidInvoiceDir = Configuration["Esker:Folders:PaidInvoices"];
+				string unpaidInvoiceDir = Configuration["Esker:Folders:UnpaidInvoices"];
 				int paidInvoiceDaysPast = (int.TryParse(Configuration["PaidInvoiceDaysPast"], out int days) ? days : 10);
 				string oracleConnectionString = GetOracleConnectionStringFromConfiguration();
 				string oracleSchema = Configuration["Oracle:Schema"];
@@ -90,6 +91,7 @@ namespace EskerAP
 						services.AddScoped<Service.Interface.IPurchaseOrderExporter, Service.PurchaseOrderExporter>();
 						services.AddSingleton<Service.Interface.ISftpService>(x =>
 							ActivatorUtilities.CreateInstance<Service.SftpService>(x, sftpConfig));
+						services.AddScoped<Service.Interface.IUnpaidInvoiceReader, Service.UnpaidInvoiceReader>();
 						services.AddScoped<Service.Interface.IVendorExporter, Service.VendorExporter>();
 						services.AddScoped<Service.Interface.IVoucherConverter, Service.VoucherConverter>();
 						services.AddScoped<Service.Interface.IMasterDataExportService, Service.MasterDataExportService>();
@@ -120,7 +122,7 @@ namespace EskerAP
 						case "paid-invoice":
 							{
 								var exporter = host.Services.GetService<Service.Interface.IVoucherExportService>();
-								exporter.ExportPaidInvoices(paidInvoiceDir, paidInvoiceDir, companyCode, paidInvoiceDaysPast);
+								exporter.ExportPaidInvoices(paidInvoiceDir, paidInvoiceDir, unpaidInvoiceDir, companyCode);
 								return;
 							}
 						case "import":

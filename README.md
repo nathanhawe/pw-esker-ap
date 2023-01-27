@@ -38,6 +38,7 @@ the application secrets.  The structure of the file is:
 			"MasterData" : "...",
 			"Invoices" : "...",
 			"Ack" : "...",
+			"UnpaidInvoices" : "...",
 			"PaidInvoices" : "..."
 		},
 		"SFTP": {
@@ -71,6 +72,7 @@ Default serilog configuration is included in the appsettings.json file in the pr
 | Esker:Folders:MasterData | The folder used to export ERP data to Esker e.g. "In_MasterData" |
 | Esker:Folders:Invoices | The folder used to import invoice XML files from Esker e.g. "Out" |
 | Esker:Folders:Ack | The folder used to export ERP acknowledgement files e.g. "ErpAck" |
+| Esker:Folders:UnpaidInvoices | The folder used to import CSVs of unpaid invoices from Esker e.g. "Out_UnpaidInvoices" |
 | Esker:Folders:PaidInvoices | The folder used to export a CSV of invoice payments to Esker e.g. "In_PaidInvoices" |
 | Esker:SFTP:Host | The SFTP host name |
 | Esker:SFTP:Port | The SFTP port number |

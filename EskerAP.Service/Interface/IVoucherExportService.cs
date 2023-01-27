@@ -2,6 +2,6 @@
 {
 	public interface IVoucherExportService
 	{
-		void ExportPaidInvoices(string localDirectory, string remoteDirectory, string companyCode, int daysPast);		
+		void ExportPaidInvoices(string paidInvoiceLocalDirectory, string paidInvoiceRemoteDirectory, string unpaidInvoiceRemoteDirectory, string companyCode);		
 	}
 }
