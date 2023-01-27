@@ -32,6 +32,7 @@ namespace EskerAP
 				string ackDir = Configuration["Esker:Folders:Ack"];
 				string invoiceDir = Configuration["Esker:Folders:Invoices"];
 				string paidInvoiceDir = Configuration["Esker:Folders:PaidInvoices"];
+				string unpaidInvoiceDir = Configuration["Esker:Folders:UnpaidInvoices"];
 				int paidInvoiceDaysPast = (int.TryParse(Configuration["PaidInvoiceDaysPast"], out int days) ? days : 10);
 				string oracleConnectionString = GetOracleConnectionStringFromConfiguration();
 				string oracleSchema = Configuration["Oracle:Schema"];
@@ -120,7 +121,7 @@ namespace EskerAP
 						case "paid-invoice":
 							{
 								var exporter = host.Services.GetService<Service.Interface.IVoucherExportService>();
-								exporter.ExportPaidInvoices(paidInvoiceDir, paidInvoiceDir, companyCode, paidInvoiceDaysPast);
+								exporter.ExportPaidInvoices(paidInvoiceDir, paidInvoiceDir, unpaidInvoiceDir, companyCode);
 								return;
 							}
 						case "import":
