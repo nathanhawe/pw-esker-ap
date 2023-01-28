@@ -22,9 +22,9 @@ namespace EskerAP.Data.Famous
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
-		public PaidInvoice GetPaidInvoice(string vendorNumber, string invoiceNumber)
+		public PaidInvoice GetPaidInvoice(string vendorNumber, string voucherNumber)
 		{
-			_logger.LogDebug("GetPaidInvoice() Invoked with '{vendorNumber}' and '{invoiceNumber}'", vendorNumber, invoiceNumber);
+			_logger.LogDebug("GetPaidInvoice() Invoked with '{vendorNumber}' and '{invoiceNumber}'", vendorNumber, voucherNumber);
 
 			PaidInvoice paidInvoice = null;
 			using OracleConnection con = new OracleConnection(_connectionString);
@@ -35,7 +35,7 @@ namespace EskerAP.Data.Famous
 				cmd.BindByName = true;
 				cmd.CommandText = GetQuery();
 				cmd.Parameters.Add(":1", OracleDbType.Varchar2, vendorNumber, System.Data.ParameterDirection.Input);
-				cmd.Parameters.Add(":2", OracleDbType.Varchar2, invoiceNumber, System.Data.ParameterDirection.Input);
+				cmd.Parameters.Add(":2", OracleDbType.Varchar2, voucherNumber, System.Data.ParameterDirection.Input);
 				OracleDataReader reader = cmd.ExecuteReader();
 
 				if(reader.Read()) 
@@ -147,7 +147,7 @@ namespace EskerAP.Data.Famous
 			WHERE 
 				hdr.APSTATUS = '4' 
 				AND fn.ID = :1
-				AND hdr.VENDINVCNO = :2
+				AND hdr.VOUCHERHDRIDX = :2
 			ORDER BY apr.PAYDATE  DESC";
 		}
 	}

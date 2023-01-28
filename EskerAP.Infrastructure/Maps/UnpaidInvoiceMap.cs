@@ -7,7 +7,7 @@ namespace EskerAP.Infrastructure.Maps
 		public UnpaidInvoiceMap()
 		{
 			Map(x => x.VendorNumber).Index(0).Name("Vendor number");
-			Map(x => x.InvoiceNumber).Index(1).Name("ERP Invoice number");
+			Map(x => x.InvoiceNumber).Index(1).Name("ERP Invoice number", "ERP invoice number");
 			Map(x => x.CompanyCode).Index(2).Name("Company code");
 		}
 	}
