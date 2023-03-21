@@ -48,6 +48,11 @@
 		TotalQuantityReceived = 19,
 
 		/// <summary>
+		/// [Remove This Item From PO] - Checkbox indicates a logical delete for a PO item.
+		/// </summary>
+		RemoveThisItemFromPo = 47,
+
+		/// <summary>
 		/// [PO No.] - Numeric indicates the the purchase order number the item belongs to.
 		/// </summary>
 		PONumber = 61,
@@ -71,5 +76,10 @@
 		/// [PO - PO Rejected] - Checkbox indicates that the purchase order was rejected during the approval phase.
 		/// </summary>
 		PORejected = 60,
+
+		/// <summary>
+		/// [PO - Include in Esker Export] - Checkbox indicates that the record should be included in the Esker Export.
+		/// </summary>
+		IncludeInEskerExport = 64,
 	}
 }

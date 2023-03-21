@@ -22,7 +22,7 @@ namespace EskerAP.Data.Quickbase
 		{
 			string clist = GetClist();
 			var slist = $"{(int)ItemsField.RecordId}";
-			var query = $"{{{(int)ItemsField.POPaid}.{ComparisonOperator.EX}.'0'}}AND{{{(int)ItemsField.PODate}.{ComparisonOperator.OAF}.'01-01-2021'}}AND{{{(int)ItemsField.PORejected}.{ComparisonOperator.EX}.'0'}}";
+			var query = $"{{{(int)ItemsField.IncludeInEskerExport}.{ComparisonOperator.EX}.'1'}}AND{{{(int)ItemsField.RemoveThisItemFromPo}.{ComparisonOperator.EX}.'0'}}";
 
 			return base.Get(TableId.Items, query, clist, slist, ConvertToItem);
 		}
@@ -87,6 +87,10 @@ namespace EskerAP.Data.Quickbase
 						case (int)ItemsField.IsCapEx: temp.CostType = (field.Value?.ToUpper()?.Trim() ?? String.Empty) == "YES" ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx; break;
 					}
 				}
+
+				// Set Amount Ordered
+				temp.OrderedAmount = temp.OrderedQuantity * temp.UnitPrice;
+
 				items.Add(temp);
 			}
 
