@@ -76,5 +76,10 @@
 		/// [Total Amount Received] - Currency that indicates the total dollar amount of items received.
 		/// </summary>
 		TotalAmountReceived = 935,
+
+		/// <summary>
+		/// [Include in Esker Export] - Checkbox indicates that the PO record should be included in the Esker export.
+		/// </summary>
+		IncludeInEskerExport = 942,
 	}
 }
