@@ -87,6 +87,10 @@ namespace EskerAP.Data.Quickbase
 						case (int)ItemsField.IsCapEx: temp.CostType = (field.Value?.ToUpper()?.Trim() ?? String.Empty) == "YES" ? Domain.Constants.CostType.CapEx : Domain.Constants.CostType.OpEx; break;
 					}
 				}
+
+				// Set Amount Ordered
+				temp.OrderedAmount = temp.OrderedQuantity * temp.UnitPrice;
+
 				items.Add(temp);
 			}
 
