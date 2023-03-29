@@ -116,12 +116,14 @@ namespace EskerAP.Data.Famous
 				,hdr.VENDINVCNO AS INVOICENUMBER
 				,apr.PAYDATE AS PAYMENTDATE
 				,apr.PAYMENTTYPE 
-				,apr.CHECKNO 
+				,ba.REFNO
 			FROM {(_hasSchema ? _schema + "." : "")}AP_VOUCHER_HEADER hdr
 				LEFT JOIN {(_hasSchema ? _schema + "." : "")}FC_NAME fn ON
 					hdr.VENDNAMEIDX = fn.NAMEIDX 
 				LEFT JOIN {(_hasSchema ? _schema + "." : "")}AP_PAID_RUN apr ON
-					hdr.APRUNIDX = apr.APRUNIDX 
+					hdr.APRUNIDX = apr.APRUNIDX
+				LEFT JOIN {(_hasSchema ? _schema + "." : "")}BANK_ACTIVITY ba ON
+					hdr.BANKACTIVITYIDX = ba.BANKACTIVITYIDX
 			WHERE 
 				hdr.APSTATUS = '4' 
 				AND hdr.PAIDAMT > 0
@@ -138,12 +140,14 @@ namespace EskerAP.Data.Famous
 				,hdr.VENDINVCNO AS INVOICENUMBER
 				,apr.PAYDATE AS PAYMENTDATE
 				,apr.PAYMENTTYPE 
-				,apr.CHECKNO 
+				,ba.REFNO
 			FROM {(_hasSchema ? _schema + "." : "")}AP_VOUCHER_HEADER hdr
 				LEFT JOIN {(_hasSchema ? _schema + "." : "")}FC_NAME fn ON
 					hdr.VENDNAMEIDX = fn.NAMEIDX 
 				LEFT JOIN {(_hasSchema ? _schema + "." : "")}AP_PAID_RUN apr ON
 					hdr.APRUNIDX = apr.APRUNIDX 
+				LEFT JOIN {(_hasSchema ? _schema + "." : "")}BANK_ACTIVITY ba ON
+					hdr.BANKACTIVITYIDX = ba.BANKACTIVITYIDX
 			WHERE 
 				hdr.APSTATUS = '4' 
 				AND fn.ID = :1
