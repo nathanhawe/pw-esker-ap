@@ -57,12 +57,42 @@ namespace Famous.IntegrationTests
 		}
 
 		[TestMethod]
+		public void AddVoucher_WithSpecialCharacters()
+		{
+			var testVoucher = new Voucher
+			{
+				VendorId = "TEST",
+				InvoiceNumber = "TEST012345678910", // Will be truncated to TEST01234567
+				InvoiceDate = new DateTime(2022, 10, 20),
+				PayTerms = "PAYMENT",
+				AllowDuplicateVendorInvoice = 'Y',
+			};
+			testVoucher.Lines.Add(new VoucherItem
+			{
+				CostCenterId = "4002",
+				PhaseId = "61152",
+				LineDescription = "CRAFTSMAN Screwdriver Set, Slotted &</>'\" Phillips, 14 -",
+				Quantity = 1,
+				Rate = 25.98M,
+			});
+			testVoucher.Lines.Add(new VoucherItem
+			{
+				CostCenterId = "4002",
+				PhaseId = "61152",
+				LineDescription = "Eastvolt & Mechanic <Tool> 'Kits', \"Drive\" Socket \\Set, 46",
+				Quantity = 1,
+				Rate = 9.53M,
+			});
+			var response = _repo.ImportVoucher(testVoucher);
+			Print(response);
+		}
+		[TestMethod]
 		public void HeaderErrorsReturnFailedImportResponse()
 		{
 			var testVoucher = new Voucher
 			{
 				VendorId = "TEST",
-				InvoiceNumber = "TEST01234560", 
+				InvoiceNumber = "TEST01234560",
 				InvoiceDate = new DateTime(2021, 9, 20),
 				PayTerms = "",
 			};
@@ -74,7 +104,6 @@ namespace Famous.IntegrationTests
 				Quantity = 50,
 				Rate = 2,
 			});
-
 			var response = _repo.ImportVoucher(testVoucher);
 			Print(response);
 			Assert.IsNotNull(response);
@@ -82,7 +111,6 @@ namespace Famous.IntegrationTests
 			Assert.IsFalse(String.IsNullOrWhiteSpace(response.HeaderErrors));
 			Assert.AreEqual(response.HeaderErrors, "pay terms is required");
 		}
-
 		[TestMethod]
 		public void LineErrorsReturnFailedImportResponse()
 		{
@@ -101,14 +129,12 @@ namespace Famous.IntegrationTests
 				Quantity = 50,
 				Rate = 2,
 			});
-
 			var response = _repo.ImportVoucher(testVoucher);
 			Print(response);
 			Assert.IsNotNull(response);
 			Assert.IsFalse(response.ImportWasSuccessful);
 			Assert.IsTrue(response.LineErrors.Count() > 0);
 		}
-
 		[TestMethod]
 		public void ExceptionsReturnFailedImportResponse()
 		{
@@ -127,11 +153,9 @@ namespace Famous.IntegrationTests
 				Quantity = 50,
 				Rate = 2,
 			});
-
 			var testRepo = new ImportApVouchersRepo("", "", "", "", _logger);
 			var response = testRepo.ImportVoucher(testVoucher);
 			Print(response);
-
 			Assert.IsNotNull(response);
 			Assert.IsFalse(response.ImportWasSuccessful);
 			Assert.IsNotNull(response.Exception);
