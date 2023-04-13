@@ -38,10 +38,10 @@ namespace Famous.IntegrationTests
 		[TestMethod]
 		public void GetPaidInvoice()
 		{
-			var vendorNumber = "CALRUB";
-			var invoiceNumber = "F-075877";
+			var vendorNumber = "CARPED";
+			var voucherNumber = "428063";
 
-			var temp = _repo.GetPaidInvoice(vendorNumber, invoiceNumber);
+			var temp = _repo.GetPaidInvoice(vendorNumber, voucherNumber);
 			Print(temp);
 		}
 

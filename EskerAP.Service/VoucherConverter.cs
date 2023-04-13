@@ -21,6 +21,7 @@ namespace EskerAP.Service
 		Amount,
 		Z_Phase,
 		OrderNumber,
+		PostingDate,
 	}
 
 	public class VoucherConverter : Interface.IVoucherConverter
@@ -45,15 +46,33 @@ namespace EskerAP.Service
 				var vendorNumber = doc.GetElementsByTagName($"{InvoiceElement.VendorNumber}")[0];
 				var invoiceNumber = doc.GetElementsByTagName($"{InvoiceElement.InvoiceNumber}")[0];
 				var invoiceDate = doc.GetElementsByTagName($"{InvoiceElement.InvoiceDate}")[0];
+				var postingDate = doc.GetElementsByTagName($"{InvoiceElement.PostingDate}")[0];
 				var paymentTerms = doc.GetElementsByTagName($"{InvoiceElement.PaymentTerms}")[0];
 				var dueDate = doc.GetElementsByTagName($"{InvoiceElement.DueDate}")[0];
 				var poSourceNo = doc.GetElementsByTagName($"{InvoiceElement.OrderNumber}")[0];
 				var lineItems = doc.GetElementsByTagName($"{InvoiceElement.LineItems}")[0].ChildNodes;
 
+				// Attempt to parse a posting date before falling back on the invoice date.  This is required
+				// because Famous will not allow GL Override on a voucher creation.  So, in order to save
+				// a voucher, the invoice date needs to be for an open period.  
+				DateTime d;
+				if(DateTime.TryParse(postingDate?.InnerText, out DateTime pDate))
+				{
+					d = pDate;
+				}
+				else if (DateTime.TryParse(invoiceDate?.InnerText, out DateTime iDate))
+				{
+					d = iDate;
+				}
+				else
+				{
+					d = DateTime.MinValue;
+				}
+				
 				voucher.Ruid = invoice.Attributes["RUID"].Value;
 				voucher.VendorId = vendorNumber?.InnerText;
 				voucher.InvoiceNumber = invoiceNumber?.InnerText;
-				voucher.InvoiceDate = DateTime.TryParse(invoiceDate?.InnerText, out DateTime iDate) ? iDate : DateTime.MinValue;
+				voucher.InvoiceDate = d;
 				voucher.PayTerms = paymentTerms?.InnerText;
 				voucher.DueDate = DateTime.TryParse(dueDate?.InnerText, out DateTime dDate) ? dDate : DateTime.MinValue;
 				voucher.PoSourceNumber = poSourceNo?.InnerText;

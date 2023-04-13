@@ -74,7 +74,7 @@ namespace EskerAP.Data.Famous
 						  Name.ID AS VendorNumber
 						, Header.APPONO AS OrderNumber
 						, Header.PODATETIME AS OrderDate
-						, Line.LINENO AS ItemNumber
+						, Detail.APPODTLSEQ AS ItemNumber
 						-- There is no Part Number
 						-- There is no Item Type
 						, Line.RECVDESCR AS Description
@@ -120,7 +120,7 @@ namespace EskerAP.Data.Famous
 						  Name.ID AS VendorNumber
 						, Header.APPONO AS OrderNumber
 						, Header.PODATETIME AS OrderDate
-						, 0 AS ItemNumber-- There is no good Line number
+						, Detail.APPODTLSEQ AS ItemNumber
 						-- There is no Part Number
 						-- There is no Item Type
 						, fccc.DESCR AS Description
