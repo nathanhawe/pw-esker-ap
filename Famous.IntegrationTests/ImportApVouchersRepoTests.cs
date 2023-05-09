@@ -39,6 +39,7 @@ namespace Famous.IntegrationTests
 			{
 				VendorId = "TEST",
 				InvoiceNumber = "TEST012345678910", // Will be truncated to TEST01234567
+				StubDescription = "Test Description Blank Posting Date #2 and some extra for cut off", // Will be truncated to "Test Description Blank Posting Date #2 a"
 				InvoiceDate = new DateTime(2022,10,20),
 				PayTerms = "PAYMENT",
 				AllowDuplicateVendorInvoice = 'Y',
