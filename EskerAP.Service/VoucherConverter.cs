@@ -77,7 +77,7 @@ namespace EskerAP.Service
 				voucher.StubDescription= invoiceDescription?.InnerText;
 				voucher.InvoiceDate = d;
 				voucher.PayTerms = paymentTerms?.InnerText;
-				voucher.DueDate = DateTime.TryParse(dueDate?.InnerText, out DateTime dDate) ? dDate : DateTime.MinValue;
+				voucher.DueDate = DateTime.TryParse(dueDate?.InnerText, out DateTime dDate) ? dDate : (DateTime?)null;
 				voucher.PoSourceNumber = poSourceNo?.InnerText;
 
 				XmlNode costCenter, glAccount, description, amount, line, phase;
