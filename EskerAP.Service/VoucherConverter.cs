@@ -10,6 +10,7 @@ namespace EskerAP.Service
 		Invoice,
 		VendorNumber,
 		InvoiceNumber,
+		InvoiceDescription,
 		InvoiceDate,
 		PaymentTerms,
 		DueDate,
@@ -45,6 +46,7 @@ namespace EskerAP.Service
 				var invoice = doc.GetElementsByTagName($"{InvoiceElement.Invoice}")[0];
 				var vendorNumber = doc.GetElementsByTagName($"{InvoiceElement.VendorNumber}")[0];
 				var invoiceNumber = doc.GetElementsByTagName($"{InvoiceElement.InvoiceNumber}")[0];
+				var invoiceDescription = doc.GetElementsByTagName($"{InvoiceElement.InvoiceDescription}")[0];
 				var invoiceDate = doc.GetElementsByTagName($"{InvoiceElement.InvoiceDate}")[0];
 				var postingDate = doc.GetElementsByTagName($"{InvoiceElement.PostingDate}")[0];
 				var paymentTerms = doc.GetElementsByTagName($"{InvoiceElement.PaymentTerms}")[0];
@@ -72,6 +74,7 @@ namespace EskerAP.Service
 				voucher.Ruid = invoice.Attributes["RUID"].Value;
 				voucher.VendorId = vendorNumber?.InnerText;
 				voucher.InvoiceNumber = invoiceNumber?.InnerText;
+				voucher.StubDescription= invoiceDescription?.InnerText;
 				voucher.InvoiceDate = d;
 				voucher.PayTerms = paymentTerms?.InnerText;
 				voucher.DueDate = DateTime.TryParse(dueDate?.InnerText, out DateTime dDate) ? dDate : DateTime.MinValue;
